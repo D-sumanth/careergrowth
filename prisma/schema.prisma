@@ -1,0 +1,436 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  CONSULTANT
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+  NO_SHOW
+}
+
+enum BookingKind {
+  ONE_TO_ONE
+  WORKSHOP
+  RESUME_REVIEW
+}
+
+enum WorkshopStatus {
+  DRAFT
+  PUBLISHED
+  COMPLETED
+  CANCELLED
+}
+
+enum InquiryCategory {
+  GENERAL
+  RESUME_REVIEW
+  CORPORATE_WORKSHOP
+  CONSULTATION
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  RESPONDED
+  CLOSED
+}
+
+enum ReviewStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  AWAITING_CLIENT
+  DELIVERED
+}
+
+enum PaymentStatus {
+  PENDING
+  REQUIRES_ACTION
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum UploadVisibility {
+  PRIVATE
+  SHARED
+  PUBLIC
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ACTION_REQUIRED
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  name                  String
+  email                 String                 @unique
+  passwordHash          String?
+  emailVerifiedAt       DateTime?
+  role                  UserRole               @default(STUDENT)
+  image                 String?
+  isActive              Boolean                @default(true)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  profile               Profile?
+  bookings              Booking[]              @relation("StudentBookings")
+  assignedBookings      Booking[]              @relation("ConsultantBookings")
+  inquiries             Inquiry[]
+  reviewRequests        ResumeReviewRequest[]  @relation("ReviewRequester")
+  reviewAssignments     ResumeReviewRequest[]  @relation("ReviewAssignee")
+  workshopRegistrations WorkshopRegistration[]
+  uploadedDocuments     UploadedDocument[]
+  payments              Payment[]
+  invoices              Invoice[]
+  notifications         Notification[]
+  sessions              AuthSession[]
+  passwordResetTokens   PasswordResetToken[]
+  verificationTokens    EmailVerificationToken[]
+  auditLogs             AuditLog[]             @relation("AuditActor")
+}
+
+model Profile {
+  id           String            @id @default(cuid())
+  userId       String            @unique
+  mobileNumber String?
+  university   String?
+  degree       String?
+  visaStatus   String?
+  careerTarget String?
+  linkedInUrl  String?
+  timezone     String            @default("Europe/London")
+  notes        String?
+  cvDocumentId String?
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cvDocument   UploadedDocument? @relation("ProfileCvDocument", fields: [cvDocumentId], references: [id], onDelete: SetNull)
+}
+
+model Service {
+  id                String      @id @default(cuid())
+  slug              String      @unique
+  title             String
+  shortDescription  String
+  description       String
+  whoItIsFor        String
+  includedItems     Json
+  durationMinutes   Int
+  pricePence        Int
+  isActive          Boolean     @default(true)
+  isFeatured        Boolean     @default(false)
+  bookingKind       BookingKind @default(ONE_TO_ONE)
+  sessionBufferMins Int         @default(15)
+  maxBookingsPerDay Int         @default(6)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  bookings          Booking[]
+}
+
+model Package {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  description    String
+  pricePence     Int
+  serviceIds     String[]
+  sessionCredits Int      @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Booking {
+  id                 String        @id @default(cuid())
+  serviceId          String?
+  studentId          String
+  consultantId       String?
+  status             BookingStatus @default(PENDING)
+  kind               BookingKind   @default(ONE_TO_ONE)
+  startsAt           DateTime
+  endsAt             DateTime
+  timezone           String        @default("Europe/London")
+  notes              String?
+  cancellationReason String?
+  rescheduleReason   String?
+  meetingLink        String?
+  calendarIcsKey     String?
+  stripeCheckoutId   String?
+  paymentRequired    Boolean       @default(true)
+  paymentStatus      PaymentStatus @default(PENDING)
+  service            Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  student            User          @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
+  consultant         User?         @relation("ConsultantBookings", fields: [consultantId], references: [id], onDelete: SetNull)
+  payment            Payment?
+  invoice            Invoice?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([startsAt])
+  @@index([studentId, startsAt])
+  @@index([consultantId, startsAt])
+}
+
+model AvailabilityRule {
+  id           String   @id @default(cuid())
+  consultantId String?
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  timezone     String   @default("Europe/London")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AvailabilityOverride {
+  id           String   @id @default(cuid())
+  consultantId String?
+  date         DateTime
+  startTime    String?
+  endTime      String?
+  isAvailable  Boolean  @default(false)
+  reason       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Workshop {
+  id              String                 @id @default(cuid())
+  slug            String                 @unique
+  title           String
+  description     String
+  bannerImageUrl  String?
+  startsAt        DateTime
+  endsAt          DateTime
+  timezone        String                 @default("Europe/London")
+  seatLimit       Int
+  waitlistEnabled Boolean                @default(true)
+  pricePence      Int
+  status          WorkshopStatus         @default(DRAFT)
+  replayUrl       String?
+  downloadUrl     String?
+  registrations   WorkshopRegistration[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+}
+
+model WorkshopRegistration {
+  id         String        @id @default(cuid())
+  workshopId String
+  userId     String
+  status     PaymentStatus @default(PENDING)
+  waitlisted Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+  workshop   Workshop      @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workshopId, userId])
+}
+
+model Inquiry {
+  id           String          @id @default(cuid())
+  userId       String?
+  name         String
+  email        String
+  category     InquiryCategory
+  subject      String
+  message      String
+  mobileNumber String?
+  status       InquiryStatus   @default(NEW)
+  assignedTo   String?
+  repliedAt    DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  user         User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model ResumeReviewRequest {
+  id               String            @id @default(cuid())
+  requesterId      String?
+  assignedToId     String?
+  serviceId        String?
+  status           ReviewStatus      @default(NEW)
+  linkedInUrl      String?
+  jobTarget        String
+  industry         String?
+  currentChallenge String
+  deadline         DateTime?
+  notes            String?
+  deliverySummary  String?
+  turnaroundHours  Int?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  requester        User?             @relation("ReviewRequester", fields: [requesterId], references: [id], onDelete: SetNull)
+  assignedTo       User?             @relation("ReviewAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  documents        UploadedDocument[]
+}
+
+model UploadedDocument {
+  id            String               @id @default(cuid())
+  ownerId       String?
+  reviewRequestId String?
+  fileName      String
+  mimeType      String
+  sizeBytes     Int
+  storageKey    String
+  visibility    UploadVisibility     @default(PRIVATE)
+  createdAt     DateTime             @default(now())
+  owner         User?                @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  reviewRequest ResumeReviewRequest? @relation(fields: [reviewRequestId], references: [id], onDelete: SetNull)
+  profileCvFor  Profile[]            @relation("ProfileCvDocument")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  userId                String?
+  bookingId             String?       @unique
+  stripePaymentIntentId String?
+  stripeCheckoutId      String?
+  amountPence           Int
+  currency              String        @default("gbp")
+  status                PaymentStatus @default(PENDING)
+  discountCode          String?
+  refundAmountPence     Int?
+  refundedAt            DateTime?
+  metadata              Json?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  user                  User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  booking               Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  userId        String?
+  bookingId     String?  @unique
+  invoiceNumber String   @unique
+  amountPence   Int
+  currency      String   @default("gbp")
+  issuedAt      DateTime @default(now())
+  dueAt         DateTime?
+  receiptUrl    String?
+  createdAt     DateTime @default(now())
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  booking       Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  headline    String
+  content     String
+  serviceType String
+  university  String?
+  currentRole String?
+  rating      Int      @default(5)
+  featured    Boolean  @default(false)
+  publishedAt DateTime @default(now())
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  excerpt        String
+  content        String
+  topic          String
+  published      Boolean  @default(false)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model FAQ {
+  id          String   @id @default(cuid())
+  question    String
+  answer      String
+  category    String
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+}
+
+model NewsletterSubscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  consentedAt DateTime
+  status      String   @default("subscribed")
+  source      String   @default("website")
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  type      NotificationType @default(INFO)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailVerificationToken {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
