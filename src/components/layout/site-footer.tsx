@@ -8,7 +8,7 @@ export function SiteFooter() {
         <div className="space-y-3">
           <h3 className="font-serif text-2xl text-white">{siteConfig.name}</h3>
           <p className="text-sm leading-7 text-slate-400">
-            Warm, practical career support for students and recent graduates building confidence in the UK job market.
+            Career coaching and UK job-search guidance designed to make the process clearer for international students and graduates.
           </p>
         </div>
         <div className="space-y-3">
@@ -16,6 +16,9 @@ export function SiteFooter() {
           <p className="text-sm">{siteConfig.email}</p>
           <p className="text-sm">{siteConfig.phone}</p>
           <p className="text-sm">{siteConfig.location}</p>
+          <a href={siteConfig.linkedin} className="text-sm underline-offset-4 hover:underline">
+            LinkedIn profile
+          </a>
         </div>
         <div className="space-y-3">
           <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Navigate</h4>

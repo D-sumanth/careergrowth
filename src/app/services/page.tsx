@@ -12,9 +12,9 @@ export default function ServicesPage() {
       <main className="mx-auto max-w-7xl space-y-8 px-5 py-16 sm:px-8">
         <div className="max-w-3xl space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Services</p>
-          <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-950">Career support designed for serious students and recent graduates.</h1>
+          <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Career support designed around the real questions international students ask during the UK job search.</h1>
           <p className="text-lg leading-8 text-slate-600">
-            Every service includes clear outcomes, sensible pricing, and a straightforward CTA. This structure is ready for admin-managed pricing, service toggles, and future packages or course products.
+            The service mix now reflects the strongest themes from Aditi Rahegaonkar&apos;s public content: CV improvement, interview support, job-search strategy, sponsorship awareness, and structured support that feels practical rather than generic.
           </p>
         </div>
         <div className="grid gap-6">
@@ -30,7 +30,7 @@ export default function ServicesPage() {
                 <p className="text-sm font-semibold text-slate-950">What is included</p>
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
                   {service.included.map((item) => (
-                    <li key={item}>• {item}</li>
+                    <li key={item}>- {item}</li>
                   ))}
                 </ul>
                 <p className="mt-4 text-sm text-slate-500">Duration: {service.duration}</p>

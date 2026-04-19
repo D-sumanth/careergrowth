@@ -12,7 +12,7 @@ export default function WorkshopsPage() {
       <main className="mx-auto max-w-7xl space-y-8 px-5 py-16 sm:px-8">
         <div className="max-w-3xl space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Workshops</p>
-          <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-950">Live group learning with clear outcomes and seat limits.</h1>
+          <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Live sessions on UK job search, sponsorship awareness, and stronger applications.</h1>
         </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {workshops.map((workshop) => (

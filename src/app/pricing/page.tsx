@@ -11,7 +11,7 @@ export default function PricingPage() {
       <main className="mx-auto max-w-7xl space-y-10 px-5 py-16 sm:px-8">
         <div className="max-w-3xl space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Pricing</p>
-          <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-950">Straightforward pricing with room for packages, discounts, and future product expansion.</h1>
+          <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Straightforward pricing for support that helps students move with more clarity.</h1>
         </div>
         <section className="grid gap-6 md:grid-cols-3">
           {services.slice(0, 3).map((service) => (
