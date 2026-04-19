@@ -17,25 +17,27 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
       <div className="mx-auto max-w-7xl px-5 py-4 sm:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="min-w-0">
+        <div className="flex items-start justify-between gap-4 xl:items-center">
+          <Link href="/" className="min-w-0 max-w-sm pr-2">
             <div className="font-serif text-lg font-semibold text-slate-950 sm:text-xl">{siteConfig.consultantName}</div>
-            <div className="text-xs text-slate-500">{siteConfig.tagline}</div>
+            <div className="mt-1 max-w-xs text-sm leading-6 text-slate-500 sm:max-w-sm">{siteConfig.tagline}</div>
           </Link>
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-5 px-4 xl:flex 2xl:gap-7">
             {navItems.map(([label, href]) => (
-              <Link key={href} href={href} className="text-sm text-slate-700 transition hover:text-slate-950">
+              <Link key={href} href={href} className="whitespace-nowrap text-sm text-slate-700 transition hover:text-slate-950">
                 {label}
               </Link>
             ))}
           </nav>
-          <div className="hidden items-center gap-2 sm:flex">
-            <ButtonLink href="/sign-in" variant="ghost" className="hidden md:inline-flex">
+          <div className="hidden items-center gap-2 lg:flex xl:shrink-0">
+            <ButtonLink href="/sign-in" variant="ghost" className="hidden whitespace-nowrap lg:inline-flex">
               Sign in
             </ButtonLink>
-            <ButtonLink href="/services">Book a Session</ButtonLink>
+            <ButtonLink href="/services" className="whitespace-nowrap">
+              Book a Session
+            </ButtonLink>
           </div>
-          <details className="group lg:hidden">
+          <details className="group lg:hidden xl:hidden">
             <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900">
               <Menu className="h-5 w-5" />
             </summary>

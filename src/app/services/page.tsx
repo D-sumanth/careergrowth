@@ -10,10 +10,10 @@ export default function ServicesPage() {
     <>
       <SiteHeader />
       <main className="mx-auto max-w-7xl space-y-8 px-5 py-16 sm:px-8">
-        <div className="max-w-3xl space-y-4">
+        <div className="max-w-4xl space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Services</p>
-          <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Career support designed around the real questions international students ask during the UK job search.</h1>
-          <p className="text-lg leading-8 text-slate-600">
+          <h1 className="max-w-5xl font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:max-w-4xl">Career support designed around the real questions international students ask during the UK job search.</h1>
+          <p className="max-w-3xl text-lg leading-8 text-slate-600">
             The service mix now reflects the strongest themes from Aditi Rahegaonkar&apos;s public content: CV improvement, interview support, job-search strategy, sponsorship awareness, and structured support that feels practical rather than generic.
           </p>
         </div>
