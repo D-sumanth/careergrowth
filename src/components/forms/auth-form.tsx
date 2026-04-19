@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 
 export function AuthForm({
   mode,
+  showDemoHint = false,
 }: {
   mode: "sign-in" | "sign-up" | "forgot-password" | "reset-password";
+  showDemoHint?: boolean;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState("");
@@ -70,7 +72,7 @@ export function AuthForm({
 
       {status ? <p className="text-sm text-slate-600">{status}</p> : null}
 
-      {mode === "sign-in" ? (
+      {mode === "sign-in" && showDemoHint ? (
         <p className="text-xs text-slate-500">
           Demo logins: `student@example.com`, `coach@careergrowthstudio.co.uk`, or `admin@careergrowthstudio.co.uk` with password `Password123!` when mock mode is enabled.
         </p>
