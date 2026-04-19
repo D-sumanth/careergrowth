@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 type DashboardNavProps = {
   admin?: boolean;
+  role?: "STUDENT" | "CONSULTANT" | "ADMIN";
 };
 
 const studentItems = [
@@ -16,32 +17,41 @@ const studentItems = [
   ["Settings", "/dashboard/settings"],
 ] as const;
 
+const consultantItems = [
+  ["Overview", "/dashboard"],
+  ["Bookings", "/dashboard/bookings"],
+  ["Reviews", "/dashboard/reviews"],
+  ["Documents", "/dashboard/documents"],
+  ["Availability", "/dashboard/availability"],
+  ["Settings", "/dashboard/settings"],
+] as const;
+
 const adminItems = [
   ["Overview", "/admin"],
   ["Users", "/admin/users"],
   ["Bookings", "/admin/bookings"],
+  ["Availability", "/admin/settings"],
   ["Services", "/admin/services"],
   ["Workshops", "/admin/workshops"],
   ["Content", "/admin/content"],
   ["Inquiries", "/admin/inquiries"],
   ["Reviews", "/admin/reviews"],
   ["Payments", "/admin/payments"],
-  ["Settings", "/admin/settings"],
 ] as const;
 
 function isActive(pathname: string, href: string) {
   return pathname === href || (href !== "/dashboard" && href !== "/admin" && pathname.startsWith(`${href}/`));
 }
 
-export function DashboardNav({ admin = false }: DashboardNavProps) {
+export function DashboardNav({ admin = false, role = "STUDENT" }: DashboardNavProps) {
   const pathname = usePathname();
-  const items = admin ? adminItems : studentItems;
+  const items = admin ? adminItems : role === "CONSULTANT" ? consultantItems : studentItems;
 
   return (
     <>
       <aside className="hidden w-64 shrink-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:block">
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-          {admin ? "Admin console" : "Student dashboard"}
+          {admin ? "Admin console" : role === "CONSULTANT" ? "Consultant dashboard" : "Student dashboard"}
         </p>
         <nav className="space-y-1">
           {items.map(([label, href]) => (
