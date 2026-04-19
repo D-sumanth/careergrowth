@@ -23,6 +23,7 @@ export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashb
       ? [
           ["Overview", dashboardHref],
           ["Bookings", session.role === "ADMIN" ? "/admin/bookings" : "/dashboard/bookings"],
+          ...(session.role === "CONSULTANT" ? ([["Availability", "/dashboard/availability"]] as const) : []),
           ["Documents", session.role === "ADMIN" ? "/admin/content" : "/dashboard/documents"],
           ["Settings", session.role === "ADMIN" ? "/admin/settings" : "/dashboard/settings"],
           ["View website", "/"],

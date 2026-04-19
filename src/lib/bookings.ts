@@ -51,7 +51,7 @@ async function getAvailabilityWindows(consultantId: string | null, date: string)
   }
 
   const { start, end } = getDayBoundsUtc(date);
-  const [rules, overrides] = await Promise.all([
+  const [rules, overrides, totalRuleCount] = await Promise.all([
     prisma.availabilityRule.findMany({
       where: {
         dayOfWeek,
@@ -66,6 +66,12 @@ async function getAvailabilityWindows(consultantId: string | null, date: string)
         OR: consultantId ? [{ consultantId }, { consultantId: null }] : [{ consultantId: null }],
       },
       orderBy: { startTime: "asc" },
+    }),
+    prisma.availabilityRule.count({
+      where: {
+        isActive: true,
+        OR: consultantId ? [{ consultantId }, { consultantId: null }] : [{ consultantId: null }],
+      },
     }),
   ]);
 
@@ -87,6 +93,10 @@ async function getAvailabilityWindows(consultantId: string | null, date: string)
       startTime: rule.startTime,
       endTime: rule.endTime,
     }));
+  }
+
+  if (totalRuleCount > 0) {
+    return [];
   }
 
   return defaultRules.filter((rule) => rule.dayOfWeek === dayOfWeek);
