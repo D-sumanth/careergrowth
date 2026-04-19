@@ -6,11 +6,18 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LeadForm } from "@/components/forms/lead-form";
-import { blogPosts, faqs, services, siteConfig, testimonials, workshops } from "@/lib/data/site-content";
+import { siteConfig, workshops } from "@/lib/data/site-content";
+import { getPublicFaqs, getPublicPosts, getPublicServices, getPublicTestimonials } from "@/lib/content";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 
-export default function Home() {
-  const featuredServices = services.slice(0, 4);
+export default async function Home() {
+  const [services, testimonials, blogPosts, faqs] = await Promise.all([
+    getPublicServices(),
+    getPublicTestimonials(),
+    getPublicPosts(),
+    getPublicFaqs(),
+  ]);
+  const featuredServices = services.filter((service) => service.isFeatured).slice(0, 4);
 
   return (
     <>
@@ -85,8 +92,11 @@ export default function Home() {
               <Card key={service.slug} className={`bg-gradient-to-br ${service.accent} p-6`}>
                 <h3 className="font-serif text-2xl text-slate-950">{service.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-700">{service.description}</p>
-                <p className="mt-4 text-sm font-semibold text-slate-900">{service.duration}</p>
-                <p className="mt-1 text-sm text-slate-700">{formatCurrency(service.pricePence)}</p>
+                <p className="mt-4 text-sm font-semibold text-slate-900">{service.durationLabel}</p>
+                <div className="mt-1 flex items-center gap-2 text-sm text-slate-700">
+                  {service.compareAtPricePence ? <span className="line-through opacity-60">{formatCurrency(service.compareAtPricePence)}</span> : null}
+                  <span>{formatCurrency(service.pricePence)}</span>
+                </div>
               </Card>
             ))}
           </div>
@@ -129,11 +139,9 @@ export default function Home() {
                         <Sparkles key={index} className="h-4 w-4" />
                       ))}
                     </div>
-                    <p className="mt-4 text-base leading-8 text-slate-700">&ldquo;{item.quote}&rdquo;</p>
+                    <p className="mt-4 text-base leading-8 text-slate-700">&ldquo;{item.content}&rdquo;</p>
                     <p className="mt-4 font-semibold text-slate-950">{item.name}</p>
-                    <p className="text-sm text-slate-500">
-                      {item.role}, {item.university}
-                    </p>
+                    <p className="text-sm text-slate-500">{item.role || item.university || "Career Growth Studio client"}</p>
                   </Card>
                 ))}
               </div>
@@ -184,9 +192,9 @@ export default function Home() {
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{post.topic}</p>
                 <h3 className="mt-3 font-serif text-2xl text-slate-950">{post.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-600">{post.excerpt}</p>
-                <a href={`/resources/${post.slug}`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-950">
-                  Read article <ArrowRight className="h-4 w-4" />
-                </a>
+                <ButtonLink href={`/resources/${post.slug}`} variant="ghost" className="mt-4 justify-start px-0">
+                  Read article <ArrowRight className="ml-2 h-4 w-4" />
+                </ButtonLink>
               </Card>
             ))}
           </div>

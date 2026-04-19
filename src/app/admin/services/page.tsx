@@ -1,15 +1,17 @@
 import { AdminMetricGrid } from "@/components/admin/admin-metric-grid";
 import { AdminSectionCard } from "@/components/admin/admin-section-card";
+import { ServicesManager } from "@/components/admin/services-manager";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-empty-state";
 import { Badge } from "@/components/ui/badge";
 import { requireSession } from "@/lib/auth/session";
 import { getAdminServicesData } from "@/lib/admin";
+import { getManagedServices } from "@/lib/content";
 import { formatCurrency } from "@/lib/utils";
 
 export default async function AdminServicesPage() {
   await requireSession(["ADMIN"]);
-  const data = await getAdminServicesData();
+  const [data, managedItems] = await Promise.all([getAdminServicesData(), getManagedServices()]);
 
   return (
     <DashboardShell title="Services" description="See the active service catalog, pricing, durations, and booking demand in one place." admin role="ADMIN">
@@ -46,6 +48,13 @@ export default async function AdminServicesPage() {
         ) : (
           <DashboardEmptyState title="No services found" description="Seeded or admin-created services will appear here once the current database has service records." />
         )}
+      </AdminSectionCard>
+
+      <AdminSectionCard
+        title="Services management"
+        description="Create new services, edit the offer details, and manage discounted pricing without changing code."
+      >
+        <ServicesManager items={managedItems} />
       </AdminSectionCard>
     </DashboardShell>
   );

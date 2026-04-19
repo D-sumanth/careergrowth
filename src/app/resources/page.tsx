@@ -1,10 +1,13 @@
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Card } from "@/components/ui/card";
-import { blogPosts } from "@/lib/data/site-content";
+import Link from "next/link";
+import { getPublicPosts } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const blogPosts = await getPublicPosts();
+
   return (
     <>
       <SiteHeader />
@@ -19,10 +22,10 @@ export default function ResourcesPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{post.topic}</p>
               <h2 className="mt-3 font-serif text-3xl text-slate-950">{post.title}</h2>
               <p className="mt-3 text-sm leading-7 text-slate-600">{post.excerpt}</p>
-              <p className="mt-4 text-sm text-slate-500">{formatDate(post.publishedAt)}</p>
-              <a href={`/resources/${post.slug}`} className="mt-4 inline-block text-sm font-semibold text-slate-950">
+              <p className="mt-4 text-sm text-slate-500">{formatDate(post.publishedAt ?? post.createdAt)}</p>
+              <Link href={`/resources/${post.slug}`} className="mt-4 inline-block text-sm font-semibold text-slate-950">
                 Read article
-              </a>
+              </Link>
             </Card>
           ))}
         </div>

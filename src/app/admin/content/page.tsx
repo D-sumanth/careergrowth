@@ -3,6 +3,7 @@ import { AdminSectionCard } from "@/components/admin/admin-section-card";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-empty-state";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { requireSession } from "@/lib/auth/session";
 import { getAdminContentData } from "@/lib/admin";
 import { formatDateTime } from "@/lib/utils";
@@ -62,6 +63,24 @@ export default async function AdminContentPage() {
           )}
         </AdminSectionCard>
       </div>
+
+      <AdminSectionCard
+        title="Content management sections"
+        description="Use the dedicated admin sections below to manage dynamic content without touching code or redeploying."
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            ["Posts management", "/admin/posts", "Create, edit, publish, and unpublish blog or resource content."],
+            ["Testimonials management", "/admin/testimonials", "Add, edit, and remove testimonials shown across the public site."],
+            ["FAQ management", "/admin/faqs", "Keep public questions and answers current from the dashboard."],
+          ].map(([title, href, copy]) => (
+            <Link key={href} href={href} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white">
+              <p className="font-medium text-slate-950">{title}</p>
+              <p className="mt-2 text-sm leading-7 text-slate-600">{copy}</p>
+            </Link>
+          ))}
+        </div>
+      </AdminSectionCard>
     </DashboardShell>
   );
 }
