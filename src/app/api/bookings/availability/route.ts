@@ -1,4 +1,4 @@
-import { addMinutes, formatISO, setHours, setMinutes } from "date-fns";
+import { getAvailabilityForServiceDate } from "@/lib/bookings";
 import { jsonError, jsonOk } from "@/lib/http";
 import { availabilityQuerySchema } from "@/lib/validation/schemas";
 
@@ -11,16 +11,8 @@ export async function GET(request: Request) {
       timezone: searchParams.get("timezone") ?? "Europe/London",
     });
 
-    const day = new Date(payload.date);
-    const slots = [10, 12, 15, 17].map((hour) =>
-      formatISO(addMinutes(setMinutes(setHours(day, hour), 0), 0)),
-    );
-
-    return jsonOk({
-      timezone: payload.timezone,
-      slots,
-      note: "This uses a deterministic mock availability schedule. Replace with Prisma-backed availability rules, overrides, and double-booking checks.",
-    });
+    const availability = await getAvailabilityForServiceDate(payload);
+    return jsonOk(availability);
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Unable to load availability.");
   }
