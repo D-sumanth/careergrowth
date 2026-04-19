@@ -1,24 +1,28 @@
-import { addMinutes } from "date-fns";
+import { createBookingForCurrentUser } from "@/lib/bookings";
+import { getSession } from "@/lib/auth/session";
 import { jsonError, jsonOk, parseJson } from "@/lib/http";
 import { bookingSchema } from "@/lib/validation/schemas";
 
 export async function POST(request: Request) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return jsonError("Authentication required.", 401);
+    }
     const payload = await parseJson(request, bookingSchema);
-    const start = new Date(payload.startsAt);
-    const end = addMinutes(start, 60);
+    const booking = await createBookingForCurrentUser({
+      userId: session.userId,
+      serviceSlug: payload.serviceSlug,
+      startsAt: payload.startsAt,
+      timezone: payload.timezone,
+      notes: payload.notes,
+    });
 
     return jsonOk(
       {
-        message: "Booking request recorded. In production, complete payment before confirming the booking record.",
-        booking: {
-          id: `mock_booking_${Date.now()}`,
-          serviceSlug: payload.serviceSlug,
-          startsAt: start.toISOString(),
-          endsAt: end.toISOString(),
-          timezone: payload.timezone,
-          status: "PENDING",
-        },
+        message: "Booking confirmed. It is now visible in your dashboard.",
+        booking,
+        redirectTo: "/dashboard/bookings",
       },
       201,
     );

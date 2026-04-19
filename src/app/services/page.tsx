@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { services } from "@/lib/data/site-content";
+import { getStaticServiceBySlug } from "@/lib/services";
 import { formatCurrency } from "@/lib/utils";
 
 export default function ServicesPage() {
@@ -36,7 +37,9 @@ export default function ServicesPage() {
                 <p className="mt-4 text-sm text-slate-500">Duration: {service.duration}</p>
                 <p className="mt-1 font-semibold text-slate-950">{formatCurrency(service.pricePence)}</p>
                 <div className="mt-5 flex flex-wrap gap-3">
-                  <ButtonLink href="/sign-up">Book or buy</ButtonLink>
+                  <ButtonLink href={`/services/${service.slug}/book`}>
+                    {getStaticServiceBySlug(service.slug)?.isBookable ? "Book session" : "Request support"}
+                  </ButtonLink>
                   <ButtonLink href="/pricing" variant="secondary">
                     View pricing
                   </ButtonLink>

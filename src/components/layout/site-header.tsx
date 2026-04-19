@@ -1,9 +1,11 @@
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import { getSession } from "@/lib/auth/session";
 import { siteConfig } from "@/lib/data/site-content";
 import { ButtonLink } from "@/components/ui/button";
+import { SignOutButton } from "@/components/layout/sign-out-button";
 
-const navItems = [
+const publicNavItems = [
   ["About", "/about"],
   ["Services", "/services"],
   ["Workshops", "/workshops"],
@@ -13,7 +15,20 @@ const navItems = [
   ["Contact", "/contact"],
 ];
 
-export function SiteHeader() {
+export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashboard" }) {
+  const session = await getSession();
+  const dashboardHref = session?.role === "ADMIN" ? "/admin" : "/dashboard";
+  const navItems =
+    mode === "dashboard" && session
+      ? [
+          ["Overview", dashboardHref],
+          ["Bookings", session.role === "ADMIN" ? "/admin/bookings" : "/dashboard/bookings"],
+          ["Documents", session.role === "ADMIN" ? "/admin/content" : "/dashboard/documents"],
+          ["Settings", session.role === "ADMIN" ? "/admin/settings" : "/dashboard/settings"],
+          ["View website", "/"],
+        ]
+      : publicNavItems;
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
       <div className="mx-auto max-w-7xl px-5 py-4 sm:px-8">
@@ -30,12 +45,23 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="hidden items-center gap-2 lg:flex xl:shrink-0">
-            <ButtonLink href="/sign-in" variant="ghost" className="hidden whitespace-nowrap lg:inline-flex">
-              Sign in
-            </ButtonLink>
-            <ButtonLink href="/services" className="whitespace-nowrap">
-              Book a Session
-            </ButtonLink>
+            {session ? (
+              <>
+                <ButtonLink href={dashboardHref} variant={mode === "dashboard" ? "primary" : "secondary"} className="whitespace-nowrap">
+                  {session.role === "ADMIN" ? "Admin console" : "Dashboard"}
+                </ButtonLink>
+                <SignOutButton className="whitespace-nowrap" />
+              </>
+            ) : (
+              <>
+                <ButtonLink href="/sign-in" variant="ghost" className="hidden whitespace-nowrap lg:inline-flex">
+                  Sign in
+                </ButtonLink>
+                <ButtonLink href="/services" className="whitespace-nowrap">
+                  Book a Session
+                </ButtonLink>
+              </>
+            )}
           </div>
           <details className="group lg:hidden xl:hidden">
             <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900">
@@ -49,25 +75,40 @@ export function SiteHeader() {
                   </Link>
                 ))}
                 <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-                  <ButtonLink href="/services" className="w-full">
-                    Book a Session
-                  </ButtonLink>
-                  <ButtonLink href="/sign-in" variant="secondary" className="w-full">
-                    Sign in
-                  </ButtonLink>
+                  {session ? (
+                    <>
+                      <ButtonLink href={dashboardHref} className="w-full">
+                        {session.role === "ADMIN" ? "Admin console" : "Dashboard"}
+                      </ButtonLink>
+                      <div className="w-full">
+                        <SignOutButton className="w-full justify-center rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <ButtonLink href="/services" className="w-full">
+                        Book a Session
+                      </ButtonLink>
+                      <ButtonLink href="/sign-in" variant="secondary" className="w-full">
+                        Sign in
+                      </ButtonLink>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           </details>
         </div>
-        <div className="mt-4 flex gap-2 sm:hidden">
-          <ButtonLink href="/services" className="flex-1">
-            Book a Session
-          </ButtonLink>
-          <ButtonLink href="/sign-in" variant="secondary" className="flex-1">
-            Sign in
-          </ButtonLink>
-        </div>
+        {session ? null : (
+          <div className="mt-4 flex gap-2 sm:hidden">
+            <ButtonLink href="/services" className="flex-1">
+              Book a Session
+            </ButtonLink>
+            <ButtonLink href="/sign-in" variant="secondary" className="flex-1">
+              Sign in
+            </ButtonLink>
+          </div>
+        )}
       </div>
     </header>
   );

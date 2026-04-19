@@ -1,15 +1,22 @@
+import { SettingsForm } from "@/components/dashboard/settings-form";
 import { Card } from "@/components/ui/card";
-import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { requireSession } from "@/lib/auth/session";
+import { getCurrentUserAccount } from "@/lib/account";
 
 export default async function DashboardSettingsPage() {
-  await requireSession(["STUDENT", "CONSULTANT", "ADMIN"]);
+  const session = await requireSession(["STUDENT", "CONSULTANT", "ADMIN"]);
+  const account = await getCurrentUserAccount(session.userId);
+  if (!account) return null;
 
   return (
-    <DashboardShell title="Profile settings">
+    <div className="space-y-6">
       <Card className="p-6">
-        <p className="text-sm leading-7 text-slate-600">Profile fields are structured for full name, university, degree, visa status, career target, LinkedIn URL, notes, mobile number, and timezone.</p>
+        <h2 className="font-semibold text-slate-950">Profile settings</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+          Update the profile details that help with coaching, bookings, and keeping your account information current.
+        </p>
       </Card>
-    </DashboardShell>
+      <SettingsForm account={account} />
+    </div>
   );
 }

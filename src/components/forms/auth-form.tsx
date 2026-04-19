@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 export function AuthForm({
   mode,
   showDemoHint = false,
+  redirectTo,
 }: {
   mode: "sign-in" | "sign-up" | "forgot-password" | "reset-password";
   showDemoHint?: boolean;
+  redirectTo?: string;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState("");
@@ -33,7 +35,7 @@ export function AuthForm({
     setStatus(result.message ?? "Done.");
 
     if (response.ok && (mode === "sign-in" || mode === "sign-up")) {
-      router.push(result.redirectTo ?? "/dashboard");
+      router.push(redirectTo ?? result.redirectTo ?? "/dashboard");
       router.refresh();
     }
   }
