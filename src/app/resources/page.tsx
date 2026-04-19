@@ -11,7 +11,7 @@ export default function ResourcesPage() {
       <main className="mx-auto max-w-7xl space-y-8 px-5 py-16 sm:px-8">
         <div className="max-w-3xl space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Resources</p>
-          <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-950">Career tips and practical guidance for the UK graduate market.</h1>
+          <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Practical guidance for international students navigating the UK job market.</h1>
         </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {blogPosts.map((post) => (

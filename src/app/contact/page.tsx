@@ -10,11 +10,12 @@ export default function ContactPage() {
       <main className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Contact</p>
-          <h1 className="font-serif text-5xl font-semibold tracking-tight text-slate-950">Ask a question, request support, or enquire about workshops.</h1>
+          <h1 className="font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Ask a question, request support, or start a conversation about your UK job search.</h1>
           <p className="text-base leading-8 text-slate-600">{siteConfig.email}</p>
           <p className="text-base leading-8 text-slate-600">{siteConfig.phone}</p>
-          <a href={siteConfig.whatsapp} className="text-sm font-semibold text-slate-950">
-            WhatsApp enquiry
+          <p className="text-sm leading-7 text-slate-600">{siteConfig.contactNote}</p>
+          <a href={siteConfig.linkedin} className="text-sm font-semibold text-slate-950">
+            View LinkedIn profile
           </a>
         </div>
         <LeadForm
