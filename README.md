@@ -12,6 +12,7 @@ Production-oriented full-stack Next.js application for a UK-based career consult
 - Stripe Checkout integration structure
 - Transactional email abstraction with console, Resend, and SMTP paths
 - Secure local upload adapter with room for S3-style replacement
+- Cloudflare R2-compatible object storage support for private document uploads
 
 ## Roles
 
@@ -35,7 +36,7 @@ Production-oriented full-stack Next.js application for a UK-based career consult
 1. Copy `.env.example` to `.env`.
 2. Set `AUTH_SECRET` to a long random string.
 3. For mock-first local development, leave `ENABLE_MOCK_MODE="true"`.
-4. For PostgreSQL-backed development, set `DATABASE_URL` and switch `ENABLE_MOCK_MODE="false"`.
+4. For PostgreSQL-backed development, set both `DATABASE_URL` and `DIRECT_URL`, then switch `ENABLE_MOCK_MODE="false"`.
 5. Install dependencies:
 
 ```bash
@@ -48,6 +49,11 @@ npm install
 npm run prisma:generate
 npm run prisma:migrate
 ```
+
+For hosted PostgreSQL providers such as Neon:
+
+- `DATABASE_URL` should usually be the pooled connection string
+- `DIRECT_URL` should be the non-pooled connection string used for Prisma migrations
 
 7. Seed demo data:
 
@@ -77,6 +83,7 @@ npm run dev
 - `src/lib/payments`: Stripe client and checkout session builder
 - `src/lib/email`: transactional email provider abstraction
 - `src/lib/storage`: upload restrictions and local file persistence
+- `src/lib/storage`: upload restrictions, local fallback, and Cloudflare R2 document storage
 - `src/lib/data`: realistic content used by the public site and mock responses
 - `prisma/schema.prisma`: primary relational data model
 - `prisma/seed.ts`: demo seed content and users
@@ -98,12 +105,44 @@ The sample code includes the structure and safe defaults for these steps. The fi
 ### Vercel
 
 1. Create a PostgreSQL database.
-2. Set all production environment variables in Vercel.
-3. Run `npm run prisma:generate` during build.
-4. Run migrations in CI or a release step with `npm run prisma:migrate`.
-5. Configure the Stripe webhook endpoint to point at `/api/stripe/webhook`.
-6. Switch `EMAIL_PROVIDER` from `console` to `resend` or `smtp`.
-7. Replace the local upload adapter with cloud object storage for production.
+2. Set all production environment variables in Vercel, including `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `APP_URL`, and `ENABLE_MOCK_MODE=false`.
+3. Keep `EMAIL_PROVIDER=console` until your sending domain is verified in Resend or SMTP is configured.
+4. Run `npm run prisma:generate` during build.
+5. Run `npm run prisma:deploy` in CI or as a release step for production schema changes.
+6. Configure the Stripe webhook endpoint to point at `/api/stripe/webhook`.
+7. Switch `EMAIL_PROVIDER` from `console` to `resend` or `smtp` only after sender verification.
+8. Replace the local upload adapter with cloud object storage for production.
+
+### Cloudflare R2 uploads
+
+To use Cloudflare R2 for document uploads, set:
+
+```bash
+UPLOAD_DRIVER=r2
+R2_ACCOUNT_ID=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_PRIVATE=careergrowth-private
+R2_BUCKET_PUBLIC=careergrowth-public
+```
+
+The current upload route stores private documents in the private bucket with object keys under `cv-uploads/...`.
+
+### First Neon migration
+
+After adding your Neon connection strings locally:
+
+```bash
+npm run prisma:generate
+npx prisma migrate dev --name init_prod_schema
+npm run db:seed
+```
+
+Then verify the database with:
+
+```bash
+npm run prisma:studio
+```
 
 ### Production hardening checklist
 

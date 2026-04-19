@@ -9,6 +9,8 @@ const fallback = {
   UPLOAD_DRIVER: "local",
   UPLOAD_LOCAL_DIR: "./storage/uploads",
   MAX_UPLOAD_SIZE_MB: "10",
+  R2_BUCKET_PRIVATE: "careergrowth-private",
+  R2_BUCKET_PUBLIC: "careergrowth-public",
 };
 
 export const env = {
@@ -32,6 +34,11 @@ export const env = {
   UPLOAD_DRIVER: process.env.UPLOAD_DRIVER ?? fallback.UPLOAD_DRIVER,
   UPLOAD_LOCAL_DIR: process.env.UPLOAD_LOCAL_DIR ?? fallback.UPLOAD_LOCAL_DIR,
   MAX_UPLOAD_SIZE_MB: Number(process.env.MAX_UPLOAD_SIZE_MB ?? fallback.MAX_UPLOAD_SIZE_MB),
+  R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+  R2_BUCKET_PRIVATE: process.env.R2_BUCKET_PRIVATE ?? fallback.R2_BUCKET_PRIVATE,
+  R2_BUCKET_PUBLIC: process.env.R2_BUCKET_PUBLIC ?? fallback.R2_BUCKET_PUBLIC,
 };
 
 export function isMockMode() {
