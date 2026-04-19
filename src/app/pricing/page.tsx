@@ -1,10 +1,13 @@
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Card } from "@/components/ui/card";
-import { packages, services } from "@/lib/data/site-content";
+import { packages } from "@/lib/data/site-content";
+import { getPublicServices } from "@/lib/content";
 import { formatCurrency } from "@/lib/utils";
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const services = await getPublicServices();
+
   return (
     <>
       <SiteHeader />
@@ -18,8 +21,11 @@ export default function PricingPage() {
             <Card key={service.slug} className="p-6">
               <h2 className="font-serif text-3xl text-slate-950">{service.title}</h2>
               <p className="mt-3 text-sm leading-7 text-slate-600">{service.description}</p>
-              <p className="mt-5 text-sm text-slate-500">{service.duration}</p>
-              <p className="mt-1 font-semibold text-slate-950">{formatCurrency(service.pricePence)}</p>
+              <p className="mt-5 text-sm text-slate-500">{service.durationLabel}</p>
+              <div className="mt-1 flex items-center gap-2 font-semibold text-slate-950">
+                {service.compareAtPricePence ? <span className="text-sm font-normal text-slate-500 line-through">{formatCurrency(service.compareAtPricePence)}</span> : null}
+                <span>{formatCurrency(service.pricePence)}</span>
+              </div>
             </Card>
           ))}
         </section>

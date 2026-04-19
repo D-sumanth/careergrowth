@@ -2,11 +2,12 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { services } from "@/lib/data/site-content";
-import { getStaticServiceBySlug } from "@/lib/services";
+import { getPublicServices } from "@/lib/content";
 import { formatCurrency } from "@/lib/utils";
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getPublicServices();
+
   return (
     <>
       <SiteHeader />
@@ -25,20 +26,23 @@ export default function ServicesPage() {
                 <h2 className="font-serif text-3xl text-slate-950">{service.title}</h2>
                 <p className="mt-3 text-base leading-8 text-slate-600">{service.description}</p>
                 <p className="mt-4 text-sm font-semibold text-slate-950">Who it is for</p>
-                <p className="mt-1 text-sm leading-7 text-slate-600">{service.who}</p>
+                <p className="mt-1 text-sm leading-7 text-slate-600">{service.whoItIsFor}</p>
               </div>
               <div className="rounded-3xl bg-slate-50 p-5">
                 <p className="text-sm font-semibold text-slate-950">What is included</p>
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  {service.included.map((item) => (
+                  {service.includedItems.map((item) => (
                     <li key={item}>- {item}</li>
                   ))}
                 </ul>
-                <p className="mt-4 text-sm text-slate-500">Duration: {service.duration}</p>
-                <p className="mt-1 font-semibold text-slate-950">{formatCurrency(service.pricePence)}</p>
+                <p className="mt-4 text-sm text-slate-500">Duration: {service.durationLabel}</p>
+                <div className="mt-1 flex items-center gap-2 font-semibold text-slate-950">
+                  {service.compareAtPricePence ? <span className="text-sm font-normal text-slate-500 line-through">{formatCurrency(service.compareAtPricePence)}</span> : null}
+                  <span>{formatCurrency(service.pricePence)}</span>
+                </div>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <ButtonLink href={`/services/${service.slug}/book`}>
-                    {getStaticServiceBySlug(service.slug)?.isBookable ? "Book session" : "Request support"}
+                    {service.isBookable ? "Book session" : "Request support"}
                   </ButtonLink>
                   <ButtonLink href="/pricing" variant="secondary">
                     View pricing
