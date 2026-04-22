@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { siteConfig } from "@/lib/data/site-content";
+import { getPublicSiteContent } from "@/lib/content";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const siteConfig = await getPublicSiteContent();
+
   return (
     <footer className="border-t border-slate-200 bg-slate-950 text-slate-200">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
         <div className="space-y-3">
           <h3 className="font-serif text-2xl text-white">{siteConfig.name}</h3>
           <p className="text-sm leading-7 text-slate-400">
-            Career coaching and UK job-search guidance designed to make the process clearer for international students and graduates.
+            {siteConfig.footerDescription}
           </p>
         </div>
         <div className="space-y-3">
