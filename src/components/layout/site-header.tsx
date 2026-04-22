@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/session";
-import { siteConfig } from "@/lib/data/site-content";
+import { getPublicSiteContent } from "@/lib/content";
 import { ButtonLink } from "@/components/ui/button";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 
@@ -17,6 +17,7 @@ const publicNavItems = [
 
 export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashboard" }) {
   const session = await getSession();
+  const siteConfig = await getPublicSiteContent();
   const dashboardHref = session?.role === "ADMIN" ? "/admin" : "/dashboard";
   const navItems =
     mode === "dashboard" && session

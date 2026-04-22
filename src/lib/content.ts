@@ -1,11 +1,31 @@
-import { BookingKind, type BlogPost, type FAQ, type Service, type Testimonial } from "@prisma/client";
+import {
+  BookingKind,
+  InquiryStatus,
+  Prisma,
+  ReviewStatus,
+  WorkshopStatus,
+  type BlogPost,
+  type FAQ,
+  type Service,
+  type Testimonial,
+  type Workshop,
+} from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isMockMode } from "@/lib/env";
-import { blogPosts as staticPosts, faqs as staticFaqs, services as staticServices, testimonials as staticTestimonials } from "@/lib/data/site-content";
+import {
+  blogPosts as staticPosts,
+  faqs as staticFaqs,
+  services as staticServices,
+  siteConfig as staticSiteConfig,
+  testimonials as staticTestimonials,
+  workshops as staticWorkshops,
+} from "@/lib/data/site-content";
 
-const pricingSettingKey = "service_pricing_overrides";
+const servicePricingSettingKey = "service_pricing_overrides";
+const workshopPricingSettingKey = "workshop_pricing_overrides";
+const siteContentSettingKey = "site_content_settings";
 
-export type ServicePriceOverrideMap = Record<string, number>;
+export type PriceOverrideMap = Record<string, number>;
 
 export type PublicServiceRecord = {
   id: string;
@@ -24,6 +44,56 @@ export type PublicServiceRecord = {
   bookingKind: BookingKind;
   isBookable: boolean;
   accent: string;
+};
+
+export type PublicWorkshopRecord = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  bannerImageUrl: string | null;
+  startsAt: Date;
+  endsAt: Date;
+  timezone: string;
+  seatLimit: number;
+  soldCount: number;
+  waitlistEnabled: boolean;
+  pricePence: number;
+  compareAtPricePence: number | null;
+  status: WorkshopStatus;
+  replayUrl: string | null;
+  downloadUrl: string | null;
+  isBookable: boolean;
+};
+
+export type SiteContentSettings = typeof staticSiteConfig & {
+  aboutTitle: string;
+  aboutIntro: string;
+  aboutBody: string;
+  values: string[];
+  workshopsTitle: string;
+  workshopsDescription: string;
+  footerDescription: string;
+};
+
+const staticSiteSettings: SiteContentSettings = {
+  ...staticSiteConfig,
+  aboutTitle: "Practical UK job-search support shaped by lived experience, not generic advice.",
+  aboutIntro:
+    "Aditi Rahegaonkar publicly shares content centred on helping international students and graduates navigate UK applications, interviews, sponsorship questions, and the emotional pressure that often comes with the process.",
+  aboutBody:
+    "The tone of the brand is intentionally practical and reassuring. The message is not that there is a magic formula, but that students can get better results with clearer strategy, stronger positioning, and support that actually understands their reality.",
+  values: [
+    "Practical guidance over vague motivation",
+    "Support that understands international student realities in the UK",
+    "Career strategy that includes sponsorship and timing, not just CV formatting",
+    "Confidence built through clarity, preparation, and honest feedback",
+  ],
+  workshopsTitle: "Live sessions on UK job search, sponsorship awareness, and stronger applications.",
+  workshopsDescription:
+    "Keep workshops current from the admin panel, including pricing, offers, seat limits, and whether a session is still available live or now replay-only.",
+  footerDescription:
+    "Career coaching and UK job-search guidance designed to make the process clearer for international students and graduates.",
 };
 
 function serviceAccentForSlug(slug: string) {
@@ -53,33 +123,45 @@ function buildExcerpt(content: string, fallbackTitle: string) {
   return trimmed.length <= 180 ? trimmed : `${trimmed.slice(0, 177)}...`;
 }
 
-async function getPricingOverridesFromDb() {
-  if (!prisma || isMockMode()) return {};
-
-  const setting = await prisma.siteSetting.findUnique({
-    where: { key: pricingSettingKey },
-  });
-
-  if (!setting || typeof setting.value !== "object" || Array.isArray(setting.value) || !setting.value) {
+function parseObjectSetting(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {};
   }
 
-  return Object.fromEntries(
-    Object.entries(setting.value as Record<string, unknown>).filter(([, value]) => typeof value === "number"),
-  ) as ServicePriceOverrideMap;
+  return value as Record<string, unknown>;
 }
 
-async function savePricingOverridesToDb(overrides: ServicePriceOverrideMap) {
+function parseNumericOverrides(value: unknown) {
+  return Object.fromEntries(
+    Object.entries(parseObjectSetting(value)).filter(([, entry]) => typeof entry === "number"),
+  ) as PriceOverrideMap;
+}
+
+async function getSettingRecord(key: string) {
+  if (!prisma || isMockMode()) return null;
+  return prisma.siteSetting.findUnique({ where: { key } });
+}
+
+async function saveSettingRecord(key: string, value: Prisma.InputJsonValue) {
   if (!prisma || isMockMode()) return;
 
   await prisma.siteSetting.upsert({
-    where: { key: pricingSettingKey },
-    update: { value: overrides },
-    create: { key: pricingSettingKey, value: overrides },
+    where: { key },
+    update: { value },
+    create: { key, value },
   });
 }
 
-function mapService(service: Service, overrides: ServicePriceOverrideMap): PublicServiceRecord {
+async function getPriceOverridesFromDb(key: string) {
+  const setting = await getSettingRecord(key);
+  return parseNumericOverrides(setting?.value);
+}
+
+async function savePriceOverridesToDb(key: string, overrides: PriceOverrideMap) {
+  await saveSettingRecord(key, overrides);
+}
+
+function mapService(service: Service, overrides: PriceOverrideMap): PublicServiceRecord {
   return {
     id: service.id,
     slug: service.slug,
@@ -98,6 +180,141 @@ function mapService(service: Service, overrides: ServicePriceOverrideMap): Publi
     isBookable: service.bookingKind === BookingKind.ONE_TO_ONE && service.durationMinutes > 0,
     accent: serviceAccentForSlug(service.slug),
   };
+}
+
+function mapWorkshop(workshop: Workshop & { _count?: { registrations: number } }, overrides: PriceOverrideMap): PublicWorkshopRecord {
+  return {
+    id: workshop.id,
+    slug: workshop.slug,
+    title: workshop.title,
+    description: workshop.description,
+    bannerImageUrl: workshop.bannerImageUrl,
+    startsAt: workshop.startsAt,
+    endsAt: workshop.endsAt,
+    timezone: workshop.timezone,
+    seatLimit: workshop.seatLimit,
+    soldCount: workshop._count?.registrations ?? 0,
+    waitlistEnabled: workshop.waitlistEnabled,
+    pricePence: workshop.pricePence,
+    compareAtPricePence: overrides[workshop.id] ?? null,
+    status: workshop.status,
+    replayUrl: workshop.replayUrl,
+    downloadUrl: workshop.downloadUrl,
+    isBookable: workshop.status === WorkshopStatus.PUBLISHED,
+  };
+}
+
+function mapTestimonial(testimonial: Testimonial) {
+  return {
+    id: testimonial.id,
+    name: testimonial.name,
+    role: testimonial.currentRole ?? "",
+    content: testimonial.content,
+    rating: testimonial.rating ?? null,
+    serviceType: testimonial.serviceType,
+  };
+}
+
+function mapPost(post: BlogPost) {
+  return {
+    id: post.id,
+    slug: post.slug,
+    title: post.title,
+    topic: post.topic,
+    excerpt: post.excerpt,
+    content: post.content,
+    published: post.published,
+    publishedAt: post.publishedAt,
+    createdAt: post.createdAt,
+    updatedAt: post.updatedAt,
+  };
+}
+
+function mapFaq(faq: FAQ) {
+  return {
+    id: faq.id,
+    question: faq.question,
+    answer: faq.answer,
+  };
+}
+
+function normalizeSiteContentSettings(value: unknown): SiteContentSettings {
+  const record = parseObjectSetting(value);
+  type StringSiteSettingKey = Exclude<keyof SiteContentSettings, "values">;
+  const getString = (key: StringSiteSettingKey) => {
+    const candidate = record[key as string];
+    return typeof candidate === "string" && candidate.trim() ? candidate : staticSiteSettings[key];
+  };
+
+  const valuesText = typeof record.valuesText === "string" ? record.valuesText : staticSiteSettings.values.join("\n");
+
+  return {
+    name: getString("name"),
+    consultantName: getString("consultantName"),
+    email: getString("email"),
+    phone: getString("phone"),
+    whatsapp: getString("whatsapp"),
+    location: getString("location"),
+    instagram: getString("instagram"),
+    linkedin: getString("linkedin"),
+    tagline: getString("tagline"),
+    heroBadge: getString("heroBadge"),
+    heroTitle: getString("heroTitle"),
+    heroDescription: getString("heroDescription"),
+    mission: getString("mission"),
+    credibility: getString("credibility"),
+    contactNote: getString("contactNote"),
+    aboutTitle: getString("aboutTitle"),
+    aboutIntro: getString("aboutIntro"),
+    aboutBody: getString("aboutBody"),
+    workshopsTitle: getString("workshopsTitle"),
+    workshopsDescription: getString("workshopsDescription"),
+    footerDescription: getString("footerDescription"),
+    values: valuesText
+      .split("\n")
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  };
+}
+
+type ManagedSiteContentInput = Omit<SiteContentSettings, "values" | "whatsapp" | "instagram"> & {
+  valuesText: string;
+  whatsapp?: string;
+  instagram?: string;
+};
+
+function serializeSiteContentSettings(input: ManagedSiteContentInput) {
+  return {
+    ...input,
+    whatsapp: input.whatsapp ?? "",
+    instagram: input.instagram ?? "",
+    valuesText: input.valuesText,
+  };
+}
+
+export async function getPublicSiteContent() {
+  if (!prisma || isMockMode()) {
+    return staticSiteSettings;
+  }
+
+  const setting = await getSettingRecord(siteContentSettingKey);
+  return normalizeSiteContentSettings(setting?.value);
+}
+
+export async function getManagedSiteContent() {
+  const settings = await getPublicSiteContent();
+
+  return {
+    ...settings,
+    valuesText: settings.values.join("\n"),
+  };
+}
+
+export async function updateManagedSiteContent(input: ManagedSiteContentInput) {
+  if (!prisma || isMockMode()) throw new Error("Site settings require the database.");
+
+  await saveSettingRecord(siteContentSettingKey, serializeSiteContentSettings(input));
+  return getManagedSiteContent();
 }
 
 export async function getPublicServices() {
@@ -127,7 +344,7 @@ export async function getPublicServices() {
       where: { isActive: true },
       orderBy: [{ isFeatured: "desc" }, { title: "asc" }],
     }),
-    getPricingOverridesFromDb(),
+    getPriceOverridesFromDb(servicePricingSettingKey),
   ]);
 
   return services.map((service) => mapService(service, overrides));
@@ -142,7 +359,7 @@ export async function getManagedServices() {
     prisma.service.findMany({
       orderBy: [{ isFeatured: "desc" }, { title: "asc" }],
     }),
-    getPricingOverridesFromDb(),
+    getPriceOverridesFromDb(servicePricingSettingKey),
   ]);
 
   return services.map((service) => mapService(service, overrides));
@@ -183,13 +400,13 @@ export async function createManagedService(input: {
     },
   });
 
-  const overrides = await getPricingOverridesFromDb();
+  const overrides = await getPriceOverridesFromDb(servicePricingSettingKey);
   if (input.compareAtPricePence && input.compareAtPricePence > input.pricePence) {
     overrides[service.id] = input.compareAtPricePence;
   } else {
     delete overrides[service.id];
   }
-  await savePricingOverridesToDb(overrides);
+  await savePriceOverridesToDb(servicePricingSettingKey, overrides);
 
   return mapService(service, overrides);
 }
@@ -233,13 +450,13 @@ export async function updateManagedService(
     },
   });
 
-  const overrides = await getPricingOverridesFromDb();
+  const overrides = await getPriceOverridesFromDb(servicePricingSettingKey);
   if (input.compareAtPricePence && input.compareAtPricePence > input.pricePence) {
     overrides[service.id] = input.compareAtPricePence;
   } else {
     delete overrides[service.id];
   }
-  await savePricingOverridesToDb(overrides);
+  await savePriceOverridesToDb(servicePricingSettingKey, overrides);
 
   return mapService(service, overrides);
 }
@@ -248,21 +465,168 @@ export async function deleteManagedService(id: string) {
   if (!prisma || isMockMode()) throw new Error("Service management requires the database.");
 
   await prisma.service.delete({ where: { id } });
-  const overrides = await getPricingOverridesFromDb();
+  const overrides = await getPriceOverridesFromDb(servicePricingSettingKey);
   delete overrides[id];
-  await savePricingOverridesToDb(overrides);
+  await savePriceOverridesToDb(servicePricingSettingKey, overrides);
   return { ok: true };
 }
 
-function mapTestimonial(testimonial: Testimonial) {
-  return {
-    id: testimonial.id,
-    name: testimonial.name,
-    role: testimonial.currentRole ?? "",
-    content: testimonial.content,
-    rating: testimonial.rating ?? null,
-    serviceType: testimonial.serviceType,
-  };
+export async function getPublicWorkshops() {
+  if (!prisma || isMockMode()) {
+    return staticWorkshops.map((workshop) => ({
+      id: workshop.slug,
+      slug: workshop.slug,
+      title: workshop.title,
+      description: workshop.summary,
+      bannerImageUrl: null,
+      startsAt: new Date(workshop.startsAt),
+      endsAt: new Date(workshop.endsAt),
+      timezone: "Europe/London",
+      seatLimit: workshop.seatLimit,
+      soldCount: workshop.sold,
+      waitlistEnabled: true,
+      pricePence: workshop.pricePence,
+      compareAtPricePence: null,
+      status: workshop.status === "Past" ? WorkshopStatus.COMPLETED : WorkshopStatus.PUBLISHED,
+      replayUrl: null,
+      downloadUrl: null,
+      isBookable: workshop.status !== "Past",
+    }));
+  }
+
+  const [workshops, overrides] = await Promise.all([
+    prisma.workshop.findMany({
+      where: { status: { in: [WorkshopStatus.PUBLISHED, WorkshopStatus.COMPLETED] } },
+      include: { _count: { select: { registrations: true } } },
+      orderBy: { startsAt: "asc" },
+    }),
+    getPriceOverridesFromDb(workshopPricingSettingKey),
+  ]);
+
+  return workshops.map((workshop) => mapWorkshop(workshop, overrides));
+}
+
+export async function getManagedWorkshops() {
+  if (!prisma || isMockMode()) {
+    return getPublicWorkshops();
+  }
+
+  const [workshops, overrides] = await Promise.all([
+    prisma.workshop.findMany({
+      include: { _count: { select: { registrations: true } } },
+      orderBy: { startsAt: "asc" },
+    }),
+    getPriceOverridesFromDb(workshopPricingSettingKey),
+  ]);
+
+  return workshops.map((workshop) => mapWorkshop(workshop, overrides));
+}
+
+export async function createManagedWorkshop(input: {
+  title: string;
+  slug: string;
+  description: string;
+  bannerImageUrl?: string | null;
+  startsAt: string;
+  endsAt: string;
+  timezone: string;
+  seatLimit: number;
+  waitlistEnabled: boolean;
+  pricePence: number;
+  compareAtPricePence?: number | null;
+  status: WorkshopStatus;
+  replayUrl?: string | null;
+  downloadUrl?: string | null;
+}) {
+  if (!prisma || isMockMode()) throw new Error("Workshop management requires the database.");
+
+  const workshop = await prisma.workshop.create({
+    data: {
+      title: input.title,
+      slug: input.slug,
+      description: input.description,
+      bannerImageUrl: input.bannerImageUrl?.trim() || null,
+      startsAt: new Date(input.startsAt),
+      endsAt: new Date(input.endsAt),
+      timezone: input.timezone,
+      seatLimit: input.seatLimit,
+      waitlistEnabled: input.waitlistEnabled,
+      pricePence: input.pricePence,
+      status: input.status,
+      replayUrl: input.replayUrl?.trim() || null,
+      downloadUrl: input.downloadUrl?.trim() || null,
+    },
+  });
+
+  const overrides = await getPriceOverridesFromDb(workshopPricingSettingKey);
+  if (input.compareAtPricePence && input.compareAtPricePence > input.pricePence) {
+    overrides[workshop.id] = input.compareAtPricePence;
+  } else {
+    delete overrides[workshop.id];
+  }
+  await savePriceOverridesToDb(workshopPricingSettingKey, overrides);
+
+  return mapWorkshop(workshop, overrides);
+}
+
+export async function updateManagedWorkshop(
+  id: string,
+  input: {
+    title: string;
+    slug: string;
+    description: string;
+    bannerImageUrl?: string | null;
+    startsAt: string;
+    endsAt: string;
+    timezone: string;
+    seatLimit: number;
+    waitlistEnabled: boolean;
+    pricePence: number;
+    compareAtPricePence?: number | null;
+    status: WorkshopStatus;
+    replayUrl?: string | null;
+    downloadUrl?: string | null;
+  },
+) {
+  if (!prisma || isMockMode()) throw new Error("Workshop management requires the database.");
+
+  const workshop = await prisma.workshop.update({
+    where: { id },
+    data: {
+      title: input.title,
+      slug: input.slug,
+      description: input.description,
+      bannerImageUrl: input.bannerImageUrl?.trim() || null,
+      startsAt: new Date(input.startsAt),
+      endsAt: new Date(input.endsAt),
+      timezone: input.timezone,
+      seatLimit: input.seatLimit,
+      waitlistEnabled: input.waitlistEnabled,
+      pricePence: input.pricePence,
+      status: input.status,
+      replayUrl: input.replayUrl?.trim() || null,
+      downloadUrl: input.downloadUrl?.trim() || null,
+    },
+  });
+
+  const overrides = await getPriceOverridesFromDb(workshopPricingSettingKey);
+  if (input.compareAtPricePence && input.compareAtPricePence > input.pricePence) {
+    overrides[workshop.id] = input.compareAtPricePence;
+  } else {
+    delete overrides[workshop.id];
+  }
+  await savePriceOverridesToDb(workshopPricingSettingKey, overrides);
+
+  return mapWorkshop(workshop, overrides);
+}
+
+export async function deleteManagedWorkshop(id: string) {
+  if (!prisma || isMockMode()) throw new Error("Workshop management requires the database.");
+  await prisma.workshop.delete({ where: { id } });
+  const overrides = await getPriceOverridesFromDb(workshopPricingSettingKey);
+  delete overrides[id];
+  await savePriceOverridesToDb(workshopPricingSettingKey, overrides);
+  return { ok: true };
 }
 
 export async function getPublicTestimonials() {
@@ -354,21 +718,6 @@ export async function deleteManagedTestimonial(id: string) {
   return { ok: true };
 }
 
-function mapPost(post: BlogPost) {
-  return {
-    id: post.id,
-    slug: post.slug,
-    title: post.title,
-    topic: post.topic,
-    excerpt: post.excerpt,
-    content: post.content,
-    published: post.published,
-    publishedAt: post.publishedAt,
-    createdAt: post.createdAt,
-    updatedAt: post.updatedAt,
-  };
-}
-
 export async function getPublicPosts() {
   if (!prisma || isMockMode()) {
     return staticPosts.map((post, index) => ({
@@ -387,7 +736,7 @@ export async function getPublicPosts() {
 
   const posts = await prisma.blogPost.findMany({
     where: { published: true },
-    orderBy: { publishedAt: "desc" },
+    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
   });
 
   return posts.map(mapPost);
@@ -491,14 +840,6 @@ export async function deleteManagedPost(id: string) {
   return { ok: true };
 }
 
-function mapFaq(faq: FAQ) {
-  return {
-    id: faq.id,
-    question: faq.question,
-    answer: faq.answer,
-  };
-}
-
 export async function getPublicFaqs() {
   if (!prisma || isMockMode()) {
     return staticFaqs.map((faq, index) => ({
@@ -562,4 +903,52 @@ export async function deleteManagedFaq(id: string) {
   if (!prisma || isMockMode()) throw new Error("FAQs require the database.");
   await prisma.fAQ.delete({ where: { id } });
   return { ok: true };
+}
+
+export async function updateManagedInquiry(
+  id: string,
+  input: {
+    status: InquiryStatus;
+    assignedTo?: string;
+  },
+) {
+  if (!prisma || isMockMode()) throw new Error("Inquiry management requires the database.");
+
+  return prisma.inquiry.update({
+    where: { id },
+    data: {
+      status: input.status,
+      assignedTo: input.assignedTo?.trim() || null,
+      repliedAt: input.status === InquiryStatus.RESPONDED || input.status === InquiryStatus.CLOSED ? new Date() : null,
+    },
+  });
+}
+
+export async function updateManagedReview(
+  id: string,
+  input: {
+    status: ReviewStatus;
+    assignedToId?: string;
+    notes?: string;
+    deliverySummary?: string;
+    turnaroundHours?: number | null;
+  },
+) {
+  if (!prisma || isMockMode()) throw new Error("Review management requires the database.");
+
+  return prisma.resumeReviewRequest.update({
+    where: { id },
+    data: {
+      status: input.status,
+      assignedToId: input.assignedToId?.trim() || null,
+      notes: input.notes?.trim() || null,
+      deliverySummary: input.deliverySummary?.trim() || null,
+      turnaroundHours: input.turnaroundHours ?? null,
+    },
+    include: {
+      requester: true,
+      assignedTo: true,
+      documents: true,
+    },
+  });
 }

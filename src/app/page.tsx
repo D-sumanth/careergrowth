@@ -6,16 +6,17 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LeadForm } from "@/components/forms/lead-form";
-import { siteConfig, workshops } from "@/lib/data/site-content";
-import { getPublicFaqs, getPublicPosts, getPublicServices, getPublicTestimonials } from "@/lib/content";
+import { getPublicFaqs, getPublicPosts, getPublicServices, getPublicSiteContent, getPublicTestimonials, getPublicWorkshops } from "@/lib/content";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 
 export default async function Home() {
-  const [services, testimonials, blogPosts, faqs] = await Promise.all([
+  const [services, testimonials, blogPosts, faqs, siteConfig, workshops] = await Promise.all([
     getPublicServices(),
     getPublicTestimonials(),
     getPublicPosts(),
     getPublicFaqs(),
+    getPublicSiteContent(),
+    getPublicWorkshops(),
   ]);
   const featuredServices = services.filter((service) => service.isFeatured).slice(0, 4);
 
@@ -152,10 +153,13 @@ export default async function Home() {
                 <div className="mt-6 space-y-4">
                   {workshops.slice(0, 2).map((workshop) => (
                     <div key={workshop.slug} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <p className="text-sm uppercase tracking-[0.16em] text-amber-200">{workshop.status}</p>
+                      <p className="text-sm uppercase tracking-[0.16em] text-amber-200">{workshop.status.replaceAll("_", " ")}</p>
                       <p className="mt-2 font-semibold">{workshop.title}</p>
-                      <p className="mt-2 text-sm text-slate-300">{formatDateTime(workshop.startsAt)}</p>
-                      <p className="mt-1 text-sm text-slate-300">{formatCurrency(workshop.pricePence)}</p>
+                      <p className="mt-2 text-sm text-slate-300">{formatDateTime(workshop.startsAt, workshop.timezone)}</p>
+                      <div className="mt-1 flex items-center gap-2 text-sm text-slate-300">
+                        {workshop.compareAtPricePence ? <span className="line-through opacity-70">{formatCurrency(workshop.compareAtPricePence)}</span> : null}
+                        <span>{formatCurrency(workshop.pricePence)}</span>
+                      </div>
                     </div>
                   ))}
                 </div>

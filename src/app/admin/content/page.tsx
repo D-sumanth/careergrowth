@@ -1,16 +1,18 @@
 import { AdminMetricGrid } from "@/components/admin/admin-metric-grid";
 import { AdminSectionCard } from "@/components/admin/admin-section-card";
+import { SiteSettingsManager } from "@/components/admin/site-settings-manager";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-empty-state";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { requireSession } from "@/lib/auth/session";
 import { getAdminContentData } from "@/lib/admin";
+import { getManagedSiteContent } from "@/lib/content";
 import { formatDateTime } from "@/lib/utils";
 
 export default async function AdminContentPage() {
   await requireSession(["ADMIN"]);
-  const data = await getAdminContentData();
+  const [data, managedSiteContent] = await Promise.all([getAdminContentData(), getManagedSiteContent()]);
 
   return (
     <DashboardShell title="Content" description="Review blog posts, FAQs, testimonials, and saved site settings from the current database." admin role="ADMIN">
@@ -80,6 +82,10 @@ export default async function AdminContentPage() {
             </Link>
           ))}
         </div>
+      </AdminSectionCard>
+
+      <AdminSectionCard title="Site content settings" description="Manage the remaining brand, homepage, about, contact, and footer copy directly from admin.">
+        <SiteSettingsManager initialValues={managedSiteContent} />
       </AdminSectionCard>
     </DashboardShell>
   );

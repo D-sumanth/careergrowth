@@ -1,9 +1,11 @@
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { LeadForm } from "@/components/forms/lead-form";
-import { siteConfig } from "@/lib/data/site-content";
+import { getPublicSiteContent } from "@/lib/content";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const siteConfig = await getPublicSiteContent();
+
   return (
     <>
       <SiteHeader />

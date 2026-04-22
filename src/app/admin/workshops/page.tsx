@@ -1,15 +1,17 @@
 import { AdminMetricGrid } from "@/components/admin/admin-metric-grid";
 import { AdminSectionCard } from "@/components/admin/admin-section-card";
+import { WorkshopsManager } from "@/components/admin/workshops-manager";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-empty-state";
 import { Badge } from "@/components/ui/badge";
 import { requireSession } from "@/lib/auth/session";
 import { getAdminWorkshopsData, getWorkshopStatusLabel } from "@/lib/admin";
+import { getManagedWorkshops } from "@/lib/content";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 
 export default async function AdminWorkshopsPage() {
   await requireSession(["ADMIN"]);
-  const data = await getAdminWorkshopsData();
+  const [data, managedItems] = await Promise.all([getAdminWorkshopsData(), getManagedWorkshops()]);
 
   return (
     <DashboardShell title="Workshops" description="Monitor upcoming workshops, registration demand, and replay-ready sessions." admin role="ADMIN">
@@ -46,6 +48,10 @@ export default async function AdminWorkshopsPage() {
         ) : (
           <DashboardEmptyState title="No workshops found" description="Published and draft workshops will appear here once they exist in the current database." />
         )}
+      </AdminSectionCard>
+
+      <AdminSectionCard title="Workshops management" description="Create, update, price, and publish workshops without changing code.">
+        <WorkshopsManager items={managedItems} />
       </AdminSectionCard>
     </DashboardShell>
   );

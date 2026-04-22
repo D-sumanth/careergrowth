@@ -154,18 +154,26 @@ export async function getAdminInquiriesData() {
 
 export async function getAdminReviewsData() {
   if (isMockMode() || !prisma) {
-    return { reviews: [], pendingCount: 0 };
+    return { reviews: [], pendingCount: 0, assignees: [] };
   }
 
-  const reviews = await prisma.resumeReviewRequest.findMany({
-    include: { requester: true, assignedTo: true, documents: true },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
+  const [reviews, assignees] = await Promise.all([
+    prisma.resumeReviewRequest.findMany({
+      include: { requester: true, assignedTo: true, documents: true },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    }),
+    prisma.user.findMany({
+      where: { role: { in: [UserRole.ADMIN, UserRole.CONSULTANT] }, isActive: true },
+      select: { id: true, name: true, email: true, role: true },
+      orderBy: [{ role: "asc" }, { name: "asc" }],
+    }),
+  ]);
 
   return {
     reviews,
     pendingCount: reviews.filter((review) => review.status !== ReviewStatus.DELIVERED && review.status !== ReviewStatus.COMPLETED).length,
+    assignees,
   };
 }
 

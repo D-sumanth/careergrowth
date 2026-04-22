@@ -1,0 +1,125 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+
+type ReviewRecord = {
+  id: string;
+  jobTarget: string;
+  currentChallenge: string;
+  status: string;
+  assignedToId: string | null;
+  notes: string | null;
+  deliverySummary: string | null;
+  turnaroundHours: number | null;
+};
+
+type Assignee = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
+export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; assignees: Assignee[] }) {
+  const router = useRouter();
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<Record<string, { status: string; assignedToId: string; notes: string; deliverySummary: string; turnaroundHours: string }>>({});
+
+  function getDraft(item: ReviewRecord) {
+    return drafts[item.id] ?? {
+      status: item.status,
+      assignedToId: item.assignedToId ?? "",
+      notes: item.notes ?? "",
+      deliverySummary: item.deliverySummary ?? "",
+      turnaroundHours: item.turnaroundHours ? String(item.turnaroundHours) : "",
+    };
+  }
+
+  function updateDraft(itemId: string, key: "status" | "assignedToId" | "notes" | "deliverySummary" | "turnaroundHours", value: string) {
+    setDrafts((current) => ({
+      ...current,
+      [itemId]: {
+        ...(current[itemId] ?? { status: "NEW", assignedToId: "", notes: "", deliverySummary: "", turnaroundHours: "" }),
+        [key]: value,
+      },
+    }));
+  }
+
+  async function save(item: ReviewRecord) {
+    const draft = getDraft(item);
+    setPendingId(item.id);
+    await fetch(`/api/admin/reviews/${item.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        status: draft.status,
+        assignedToId: draft.assignedToId,
+        notes: draft.notes,
+        deliverySummary: draft.deliverySummary,
+        turnaroundHours: draft.turnaroundHours ? Number(draft.turnaroundHours) : null,
+      }),
+    });
+    setPendingId(null);
+    router.refresh();
+  }
+
+  return (
+    <div className="space-y-4">
+      {items.map((item) => {
+        const draft = getDraft(item);
+        return (
+          <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <p className="font-medium text-slate-950">{item.jobTarget}</p>
+                <p className="mt-2 text-sm text-slate-600">{item.currentChallenge}</p>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <label className="space-y-2 text-sm text-slate-700">
+                  <span>Status</span>
+                  <select value={draft.status} onChange={(e) => updateDraft(item.id, "status", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+                    <option value="NEW">New</option>
+                    <option value="IN_PROGRESS">In progress</option>
+                    <option value="AWAITING_CLIENT">Awaiting client</option>
+                    <option value="DELIVERED">Delivered</option>
+                    <option value="COMPLETED">Completed</option>
+                  </select>
+                </label>
+                <label className="space-y-2 text-sm text-slate-700">
+                  <span>Assigned to</span>
+                  <select value={draft.assignedToId} onChange={(e) => updateDraft(item.id, "assignedToId", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+                    <option value="">Unassigned</option>
+                    {assignees.map((assignee) => (
+                      <option key={assignee.id} value={assignee.id}>
+                        {assignee.name} ({assignee.role})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+                  <span>Internal notes</span>
+                  <textarea value={draft.notes} onChange={(e) => updateDraft(item.id, "notes", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" />
+                </label>
+                <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+                  <span>Delivery summary</span>
+                  <textarea value={draft.deliverySummary} onChange={(e) => updateDraft(item.id, "deliverySummary", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" />
+                </label>
+                <label className="space-y-2 text-sm text-slate-700">
+                  <span>Turnaround hours</span>
+                  <input type="number" min="0" value={draft.turnaroundHours} onChange={(e) => updateDraft(item.id, "turnaroundHours", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+                </label>
+                <div className="flex items-end">
+                  <Button type="button" disabled={pendingId === item.id} onClick={() => save(item)}>
+                    {pendingId === item.id ? "Saving..." : "Update review"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
