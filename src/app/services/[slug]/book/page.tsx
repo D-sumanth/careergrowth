@@ -70,7 +70,7 @@ export default async function BookServicePage({
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink href={`/sign-in?next=/services/${service.slug}/book`}>Sign in</ButtonLink>
-              <ButtonLink href="/sign-up" variant="secondary">
+              <ButtonLink href={`/sign-up?next=/services/${service.slug}/book`} variant="secondary">
                 Create account
               </ButtonLink>
             </div>
