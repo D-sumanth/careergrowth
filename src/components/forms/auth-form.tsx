@@ -17,6 +17,14 @@ export function AuthForm({
   const [status, setStatus] = useState("");
   const [pending, setPending] = useState(false);
 
+  function resolveRedirect(target?: string) {
+    if (!target || !target.startsWith("/")) {
+      return null;
+    }
+
+    return target;
+  }
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
@@ -35,7 +43,7 @@ export function AuthForm({
     setStatus(result.message ?? "Done.");
 
     if (response.ok && (mode === "sign-in" || mode === "sign-up")) {
-      router.push(redirectTo ?? result.redirectTo ?? "/dashboard");
+      router.push(resolveRedirect(redirectTo) ?? resolveRedirect(result.redirectTo) ?? "/dashboard");
       router.refresh();
     }
   }

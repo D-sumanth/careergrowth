@@ -9,9 +9,13 @@ export async function middleware(request: NextRequest) {
   const needsAuth = protectedRoutes.some((route) => pathname.startsWith(route));
   if (!needsAuth) return NextResponse.next();
 
+  const signInUrl = new URL("/sign-in", request.url);
+  const intendedPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  signInUrl.searchParams.set("next", intendedPath);
+
   const token = request.cookies.get("career_console_session")?.value;
   if (!token) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    return NextResponse.redirect(signInUrl);
   }
 
   try {
@@ -22,7 +26,7 @@ export async function middleware(request: NextRequest) {
     }
     return NextResponse.next();
   } catch {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    return NextResponse.redirect(signInUrl);
   }
 }
 
