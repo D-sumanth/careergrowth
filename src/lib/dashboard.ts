@@ -38,6 +38,11 @@ export async function getDashboardOverview(userId: string) {
     }),
     prisma.resumeReviewRequest.findMany({
       where: { requesterId: userId },
+      include: {
+        documents: {
+          orderBy: { createdAt: "desc" },
+        },
+      },
       orderBy: { createdAt: "desc" },
       take: 5,
     }),

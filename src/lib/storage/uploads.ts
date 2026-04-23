@@ -1,6 +1,6 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { env } from "@/lib/env";
 
@@ -48,9 +48,9 @@ function getR2Client() {
 }
 
 async function storeUploadedFileLocally(file: File, fileKey: string, buffer: Buffer) {
-  const outputDir = join(process.cwd(), "storage", "uploads");
-  await mkdir(outputDir, { recursive: true });
-  await writeFile(join(outputDir, fileKey), buffer);
+  const outputPath = join(process.cwd(), "storage", "uploads", fileKey);
+  await mkdir(dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, buffer);
 }
 
 async function storeUploadedFileInR2(file: File, fileKey: string, buffer: Buffer) {
@@ -88,4 +88,44 @@ export async function storeUploadedFile(file: File) {
     provider: env.UPLOAD_DRIVER,
     bucket: env.UPLOAD_DRIVER === "r2" ? env.R2_BUCKET_PRIVATE : "local",
   };
+}
+
+async function getUploadedFileBufferFromR2(storageKey: string) {
+  const client = getR2Client();
+  const result = await client.send(
+    new GetObjectCommand({
+      Bucket: env.R2_BUCKET_PRIVATE,
+      Key: storageKey,
+    }),
+  );
+
+  if (!result.Body) {
+    throw new Error("Stored file body is empty.");
+  }
+
+  return Buffer.from(await result.Body.transformToByteArray());
+}
+
+async function getUploadedFileBufferFromLocal(storageKey: string) {
+  return readFile(join(process.cwd(), "storage", "uploads", storageKey));
+}
+
+export async function getStoredFileResponse(input: {
+  storageKey: string;
+  fileName: string;
+  mimeType: string;
+}) {
+  const buffer =
+    env.UPLOAD_DRIVER === "r2"
+      ? await getUploadedFileBufferFromR2(input.storageKey)
+      : await getUploadedFileBufferFromLocal(input.storageKey);
+
+  return new Response(buffer, {
+    status: 200,
+    headers: {
+      "Content-Type": input.mimeType || "application/octet-stream",
+      "Content-Disposition": `attachment; filename="${input.fileName.replace(/"/g, "")}"`,
+      "Cache-Control": "private, no-store",
+    },
+  });
 }

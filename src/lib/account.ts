@@ -138,6 +138,8 @@ export async function saveUploadedDocumentForUser(
     mimeType: string;
     sizeBytes: number;
     storageKey: string;
+    reviewRequestId?: string | null;
+    visibility?: "PRIVATE" | "SHARED" | "PUBLIC";
   },
 ) {
   if (isMockMode() || !prisma) {
@@ -146,18 +148,19 @@ export async function saveUploadedDocumentForUser(
       ownerId: userId,
       ...input,
       createdAt: new Date(),
-      visibility: "PRIVATE",
+      visibility: input.visibility ?? "PRIVATE",
     };
   }
 
   return prisma.uploadedDocument.create({
     data: {
       ownerId: userId,
+      reviewRequestId: input.reviewRequestId ?? null,
       fileName: input.fileName,
       mimeType: input.mimeType,
       sizeBytes: input.sizeBytes,
       storageKey: input.storageKey,
-      visibility: "PRIVATE",
+      visibility: input.visibility ?? "PRIVATE",
     },
   });
 }

@@ -30,6 +30,13 @@ export default async function AdminReviewsPage() {
               notes: review.notes,
               deliverySummary: review.deliverySummary,
               turnaroundHours: review.turnaroundHours,
+              requesterName: review.requester?.name ?? "Unknown requester",
+              documents: review.documents.map((document) => ({
+                id: document.id,
+                fileName: document.fileName,
+                visibility: document.visibility,
+                createdAt: document.createdAt,
+              })),
             }))}
             assignees={data.assignees}
           />

@@ -61,4 +61,5 @@ export const resumeReviewSchema = z.object({
   currentChallenge: z.string().min(10).max(1200),
   deadline: z.string().optional().or(z.literal("")),
   notes: z.string().max(1500).optional().or(z.literal("")),
+  documentIds: z.array(z.string()).optional().default([]),
 });

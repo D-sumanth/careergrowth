@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-empty-state";
 import { requireSession } from "@/lib/auth/session";
@@ -25,6 +26,22 @@ export default async function DashboardReviewsPage() {
               <p className="mt-3 text-sm leading-7 text-slate-600">{review.currentChallenge}</p>
               {review.deadline ? <p className="mt-4 text-sm text-slate-500">Deadline: {formatDateTime(review.deadline)}</p> : null}
               {review.deliverySummary ? <p className="mt-4 text-sm leading-7 text-slate-600">{review.deliverySummary}</p> : null}
+              {review.documents.filter((document) => document.visibility === "SHARED").length ? (
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm font-semibold text-slate-950">Delivered files</p>
+                  {review.documents
+                    .filter((document) => document.visibility === "SHARED")
+                    .map((document) => (
+                      <Link
+                        key={document.id}
+                        href={`/api/documents/${document.id}/download`}
+                        className="block text-sm text-slate-700 underline underline-offset-4"
+                      >
+                        {document.fileName}
+                      </Link>
+                    ))}
+                </div>
+              ) : null}
             </Card>
           ))}
         </div>
