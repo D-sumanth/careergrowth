@@ -1,9 +1,10 @@
 import { addMinutes } from "date-fns";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { BookingStatus, PaymentStatus, UserRole } from "@prisma/client";
-import { isMockMode } from "@/lib/env";
+import { env, isMockMode } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { ensureBookableServiceBySlug } from "@/lib/services";
+import { createCheckoutForBooking, markMockBookingPaid } from "@/lib/payments/stripe";
 
 const scheduleTimezone = "Europe/London";
 
@@ -174,6 +175,7 @@ export async function getAvailabilityForServiceDate(input: {
 
 export async function createBookingForCurrentUser(input: {
   userId: string;
+  email?: string | null;
   serviceSlug: string;
   startsAt: string;
   timezone: string;
@@ -200,7 +202,7 @@ export async function createBookingForCurrentUser(input: {
   const consultantId = await getDefaultConsultantId();
   const endsAt = addMinutes(startsAt, service.durationMinutes);
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const dayBounds = getDayBoundsUtc(bookingDate);
     const dayBookings = await tx.booking.findMany({
       where: {
@@ -219,21 +221,85 @@ export async function createBookingForCurrentUser(input: {
       throw new Error("That slot has just been taken. Please choose another time.");
     }
 
-    return tx.booking.create({
+    const booking = await tx.booking.create({
       data: {
         serviceId: service.id,
         studentId: input.userId,
         consultantId,
         kind: service.bookingKind,
-        status: BookingStatus.CONFIRMED,
+        status: BookingStatus.PENDING,
         startsAt,
         endsAt,
         timezone: input.timezone,
         notes: input.notes?.trim() ? input.notes.trim() : null,
-        paymentRequired: false,
-        paymentStatus: PaymentStatus.SUCCEEDED,
+        paymentRequired: true,
+        paymentStatus: PaymentStatus.PENDING,
       },
       include: { service: true },
     });
+
+    const payment = await tx.payment.create({
+      data: {
+        userId: input.userId,
+        bookingId: booking.id,
+        amountPence: service.pricePence,
+        currency: env.STRIPE_CURRENCY,
+        status: PaymentStatus.PENDING,
+        metadata: {
+          serviceSlug: service.slug,
+          serviceTitle: service.title,
+        },
+      },
+    });
+
+    return { booking, payment };
   });
+
+  if (isMockMode()) {
+    const confirmedBooking = await markMockBookingPaid(result.booking.id);
+    return {
+      booking: confirmedBooking ?? result.booking,
+      checkout: {
+        id: `mock_checkout_${Date.now()}`,
+        url: `/checkout/success?bookingId=${result.booking.id}&mockCheckout=1`,
+        mode: "mock" as const,
+      },
+    };
+  }
+
+  try {
+    const checkout = await createCheckoutForBooking({
+      bookingId: result.booking.id,
+      paymentId: result.payment.id,
+      title: result.booking.service?.title ?? "Career session",
+      amountPence: result.payment.amountPence,
+      userId: input.userId,
+      email: input.email,
+      serviceSlug: service.slug,
+    });
+
+    await prisma.booking.update({
+      where: { id: result.booking.id },
+      data: { stripeCheckoutId: checkout.id },
+    });
+
+    await prisma.payment.update({
+      where: { id: result.payment.id },
+      data: { stripeCheckoutId: checkout.id },
+    });
+
+    return {
+      booking: {
+        ...result.booking,
+        stripeCheckoutId: checkout.id,
+      },
+      checkout,
+    };
+  } catch (error) {
+    await prisma.$transaction(async (tx) => {
+      await tx.payment.deleteMany({ where: { bookingId: result.booking.id } });
+      await tx.booking.delete({ where: { id: result.booking.id } });
+    });
+    throw error;
+  }
 }

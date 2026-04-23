@@ -30,6 +30,11 @@ export default async function DashboardBookingsPage() {
                       <div>
                         <p className="font-medium text-slate-950">{booking.service?.title ?? "Booked session"}</p>
                         <p className="mt-1 text-sm text-slate-600">{formatDateTime(booking.startsAt, booking.timezone)}</p>
+                        {booking.paymentStatus !== "SUCCEEDED" ? (
+                          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-amber-700">
+                            Awaiting payment confirmation
+                          </p>
+                        ) : null}
                       </div>
                       <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">
                         {booking.status}

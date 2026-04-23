@@ -12,6 +12,7 @@ export async function POST(request: Request) {
     const payload = await parseJson(request, bookingSchema);
     const booking = await createBookingForCurrentUser({
       userId: session.userId,
+      email: session.email,
       serviceSlug: payload.serviceSlug,
       startsAt: payload.startsAt,
       timezone: payload.timezone,
@@ -20,9 +21,10 @@ export async function POST(request: Request) {
 
     return jsonOk(
       {
-        message: "Booking confirmed. It is now visible in your dashboard.",
-        booking,
-        redirectTo: "/dashboard/bookings",
+        message: booking.checkout.mode === "mock" ? "Booking confirmed." : "Booking reserved. Continue to secure checkout.",
+        booking: booking.booking,
+        checkout: booking.checkout,
+        redirectTo: booking.checkout.url,
       },
       201,
     );

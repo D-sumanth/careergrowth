@@ -107,7 +107,11 @@ export function BookingForm({ service }: BookingFormProps) {
 
     if (response.ok) {
       setStatus(result.message ?? "Booking confirmed.");
-      router.push(result.redirectTo ?? "/dashboard/bookings");
+      if (result.redirectTo) {
+        window.location.href = result.redirectTo;
+        return;
+      }
+      router.push("/dashboard/bookings");
       router.refresh();
       return;
     }
@@ -184,7 +188,7 @@ export function BookingForm({ service }: BookingFormProps) {
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
       <Button type="submit" disabled={submitting || !selectedSlot}>
-        {submitting ? "Confirming..." : "Confirm booking"}
+        {submitting ? "Redirecting..." : "Continue to payment"}
       </Button>
     </form>
   );
