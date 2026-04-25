@@ -15,8 +15,8 @@ export async function uploadDeliveredReviewDocument(input: {
         id: `mock-review-doc-${Date.now()}`,
         reviewRequestId: input.reviewRequestId,
         ownerId: input.actorId,
-        visibility: UploadVisibility.SHARED,
         ...stored,
+        visibility: UploadVisibility.SHARED,
         createdAt: new Date(),
       },
     };

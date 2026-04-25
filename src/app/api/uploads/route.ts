@@ -26,9 +26,19 @@ export async function POST(request: Request) {
       return jsonError("No file provided.");
     }
 
-    const stored = await storeUploadedFile(file);
+    const purpose = formData.get("purpose");
+    const isPublicMedia = purpose === "public-media";
+    if (isPublicMedia && session.role !== "ADMIN") {
+      return jsonError("Only admins can upload public media.", 403);
+    }
+
+    const stored = await storeUploadedFile(file, {
+      kind: isPublicMedia ? "image" : "document",
+      visibility: isPublicMedia ? "PUBLIC" : "PRIVATE",
+    });
     const document = await saveUploadedDocumentForUser(session.userId, stored);
-    return jsonOk({ message: "File uploaded successfully.", file: stored, document }, 201);
+    const publicUrl = document.visibility === "PUBLIC" ? `/api/media/${document.id}` : null;
+    return jsonOk({ message: "File uploaded successfully.", file: { ...stored, publicUrl }, document }, 201);
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Unable to upload file.");
   }

@@ -4,15 +4,31 @@ import { dirname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { env } from "@/lib/env";
 
-const allowedMimeTypes = [
+const allowedDocumentMimeTypes = [
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/msword",
   "text/plain",
 ];
 
-export function ensureUploadIsAllowed(file: File) {
-  if (!allowedMimeTypes.includes(file.type)) {
+const allowedImageMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+
+type UploadKind = "document" | "image";
+
+function ensureUploadIsAllowed(file: File, kind: UploadKind) {
+  if (kind === "image") {
+    if (!allowedImageMimeTypes.includes(file.type)) {
+      throw new Error("Only JPEG, PNG, and WebP images are accepted.");
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("Images must be smaller than 5MB.");
+    }
+
+    return;
+  }
+
+  if (!allowedDocumentMimeTypes.includes(file.type)) {
     throw new Error("Only PDF, DOC, DOCX, and TXT files are accepted.");
   }
 
@@ -30,6 +46,13 @@ function createPrivateObjectKey(fileName: string) {
   const year = now.getUTCFullYear();
   const month = String(now.getUTCMonth() + 1).padStart(2, "0");
   return `cv-uploads/anonymous/${year}/${month}/${randomUUID()}-${createSafeFileName(fileName)}`;
+}
+
+function createPublicObjectKey(fileName: string) {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  return `public-media/${year}/${month}/${randomUUID()}-${createSafeFileName(fileName)}`;
 }
 
 function getR2Client() {
@@ -68,11 +91,19 @@ async function storeUploadedFileInR2(file: File, fileKey: string, buffer: Buffer
   );
 }
 
-export async function storeUploadedFile(file: File) {
-  ensureUploadIsAllowed(file);
+export async function storeUploadedFile(
+  file: File,
+  options?: {
+    kind?: UploadKind;
+    visibility?: "PRIVATE" | "SHARED" | "PUBLIC";
+  },
+) {
+  const kind = options?.kind ?? "document";
+  ensureUploadIsAllowed(file, kind);
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const fileKey = createPrivateObjectKey(file.name);
+  const visibility = options?.visibility ?? "PRIVATE";
+  const fileKey = visibility === "PUBLIC" ? createPublicObjectKey(file.name) : createPrivateObjectKey(file.name);
 
   if (env.UPLOAD_DRIVER === "r2") {
     await storeUploadedFileInR2(file, fileKey, buffer);
@@ -85,6 +116,8 @@ export async function storeUploadedFile(file: File) {
     fileName: file.name,
     mimeType: file.type,
     sizeBytes: file.size,
+    kind,
+    visibility,
     provider: env.UPLOAD_DRIVER,
     bucket: env.UPLOAD_DRIVER === "r2" ? env.R2_BUCKET_PRIVATE : "local",
   };
@@ -114,6 +147,7 @@ export async function getStoredFileResponse(input: {
   storageKey: string;
   fileName: string;
   mimeType: string;
+  inline?: boolean;
 }) {
   const buffer =
     env.UPLOAD_DRIVER === "r2"
@@ -124,8 +158,8 @@ export async function getStoredFileResponse(input: {
     status: 200,
     headers: {
       "Content-Type": input.mimeType || "application/octet-stream",
-      "Content-Disposition": `attachment; filename="${input.fileName.replace(/"/g, "")}"`,
-      "Cache-Control": "private, no-store",
+      "Content-Disposition": `${input.inline ? "inline" : "attachment"}; filename="${input.fileName.replace(/"/g, "")}"`,
+      "Cache-Control": input.inline ? "public, max-age=3600, s-maxage=86400" : "private, no-store",
     },
   });
 }

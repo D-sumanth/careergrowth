@@ -5,6 +5,7 @@ import slugify from "slugify";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MediaUploadField } from "@/components/admin/media-upload-field";
 import { formatCurrency } from "@/lib/utils";
 
 type WorkshopRecord = {
@@ -12,7 +13,7 @@ type WorkshopRecord = {
   slug: string;
   title: string;
   description: string;
-  bannerImageUrl: string | null;
+  imageUrl: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
   timezone: string;
@@ -30,7 +31,7 @@ type WorkshopFormState = {
   title: string;
   slug: string;
   description: string;
-  bannerImageUrl: string;
+  imageUrl: string;
   startsAt: string;
   endsAt: string;
   timezone: string;
@@ -47,7 +48,7 @@ const defaultForm: WorkshopFormState = {
   title: "",
   slug: "",
   description: "",
-  bannerImageUrl: "",
+  imageUrl: "",
   startsAt: "",
   endsAt: "",
   timezone: "Europe/London",
@@ -76,7 +77,7 @@ function toFormState(item?: WorkshopRecord): WorkshopFormState {
     title: item.title,
     slug: item.slug,
     description: item.description,
-    bannerImageUrl: item.bannerImageUrl ?? "",
+    imageUrl: item.imageUrl ?? "",
     startsAt: toDateTimeLocal(item.startsAt),
     endsAt: toDateTimeLocal(item.endsAt),
     timezone: item.timezone,
@@ -178,6 +179,7 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
             >
               <p className="font-medium">{item.title}</p>
               <p className={`mt-1 text-sm ${selectedId === item.id ? "text-slate-200" : "text-slate-600"}`}>{item.status}</p>
+              {item.imageUrl ? <p className={`mt-1 text-xs ${selectedId === item.id ? "text-slate-300" : "text-slate-500"}`}>Image attached</p> : null}
               <p className={`mt-2 text-sm ${selectedId === item.id ? "text-slate-300" : "text-slate-500"}`}>
                 {item.compareAtPricePence ? `${formatCurrency(item.compareAtPricePence)} -> ` : ""}
                 {formatCurrency(item.pricePence)}
@@ -205,10 +207,14 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
             <span>Description</span>
             <textarea value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="min-h-32 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
-            <span>Banner image URL</span>
-            <input value={form.bannerImageUrl} onChange={(e) => setForm((c) => ({ ...c, bannerImageUrl: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
-          </label>
+          <div className="md:col-span-2">
+            <MediaUploadField
+              label="Workshop cover image"
+              value={form.imageUrl}
+              onChange={(value) => setForm((c) => ({ ...c, imageUrl: value }))}
+              helperText="This image appears at the top of the workshop card and detail sections."
+            />
+          </div>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Starts at</span>
             <input type="datetime-local" value={form.startsAt} onChange={(e) => setForm((c) => ({ ...c, startsAt: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />

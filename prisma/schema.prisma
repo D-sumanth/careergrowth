@@ -133,6 +133,8 @@ model Service {
   shortDescription  String
   description       String
   whoItIsFor        String
+  imageUrl          String?
+  videoUrl          String?
   includedItems     Json
   durationMinutes   Int
   pricePence        Int
@@ -219,6 +221,7 @@ model Workshop {
   slug            String                 @unique
   title           String
   description     String
+  imageUrl        String?
   bannerImageUrl  String?
   startsAt        DateTime
   endsAt          DateTime
@@ -339,6 +342,7 @@ model Testimonial {
   name        String
   headline    String
   content     String
+  imageUrl    String?
   serviceType String
   university  String?
   currentRole String?

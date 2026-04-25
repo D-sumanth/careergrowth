@@ -5,6 +5,7 @@ import slugify from "slugify";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MediaUploadField } from "@/components/admin/media-upload-field";
 import { formatCurrency } from "@/lib/utils";
 
 type ServiceRecord = {
@@ -14,6 +15,8 @@ type ServiceRecord = {
   shortDescription: string;
   description: string;
   whoItIsFor: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
   includedItems: string[];
   durationMinutes: number;
   pricePence: number;
@@ -29,6 +32,8 @@ type ServiceFormState = {
   shortDescription: string;
   description: string;
   whoItIsFor: string;
+  imageUrl: string;
+  videoUrl: string;
   includedItemsText: string;
   durationMinutes: string;
   pricePence: string;
@@ -44,6 +49,8 @@ const defaultForm: ServiceFormState = {
   shortDescription: "",
   description: "",
   whoItIsFor: "",
+  imageUrl: "",
+  videoUrl: "",
   includedItemsText: "",
   durationMinutes: "60",
   pricePence: "",
@@ -61,6 +68,8 @@ function toFormState(service?: ServiceRecord): ServiceFormState {
     shortDescription: service.shortDescription,
     description: service.description,
     whoItIsFor: service.whoItIsFor,
+    imageUrl: service.imageUrl ?? "",
+    videoUrl: service.videoUrl ?? "",
     includedItemsText: service.includedItems.join("\n"),
     durationMinutes: String(service.durationMinutes),
     pricePence: String(service.pricePence),
@@ -166,6 +175,7 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
               <p className={`mt-2 text-sm ${selectedId === item.id ? "text-slate-200" : "text-slate-600"}`}>
                 {item.shortDescription}
               </p>
+              {item.imageUrl ? <p className={`mt-2 text-xs ${selectedId === item.id ? "text-slate-300" : "text-slate-500"}`}>Image attached</p> : null}
               <p className={`mt-2 text-sm ${selectedId === item.id ? "text-slate-300" : "text-slate-500"}`}>
                 {item.compareAtPricePence ? `${formatCurrency(item.compareAtPricePence)} -> ` : ""}
                 {formatCurrency(item.pricePence)}
@@ -197,6 +207,19 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
           <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
             <span>Who it is for</span>
             <textarea value={form.whoItIsFor} onChange={(e) => updateForm("whoItIsFor", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+          </label>
+          <div className="md:col-span-2">
+            <MediaUploadField
+              label="Cover image"
+              value={form.imageUrl}
+              onChange={(value) => updateForm("imageUrl", value)}
+              helperText="Upload a JPEG, PNG, or WebP image up to 5MB. This image appears at the top of the service card."
+            />
+          </div>
+          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+            <span>YouTube video URL (optional)</span>
+            <input value={form.videoUrl} onChange={(e) => updateForm("videoUrl", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" placeholder="https://www.youtube.com/watch?v=..." />
+            <p className="text-xs leading-6 text-slate-500">Shown on the service detail page in a responsive video section.</p>
           </label>
           <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
             <span>Included items (one per line)</span>

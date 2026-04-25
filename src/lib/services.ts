@@ -9,6 +9,8 @@ export type ServiceCatalogItem = {
   description: string;
   shortDescription: string;
   whoItIsFor: string;
+  imageUrl?: string | null;
+  videoUrl?: string | null;
   includedItems: string[];
   durationMinutes: number | null;
   pricePence: number;
@@ -42,6 +44,8 @@ function mapStaticService(service: (typeof staticServices)[number]): ServiceCata
     description: service.description,
     shortDescription: service.description,
     whoItIsFor: service.who,
+    imageUrl: null,
+    videoUrl: null,
     includedItems: service.included,
     durationMinutes,
     pricePence: service.pricePence,
@@ -60,6 +64,8 @@ function mapPrismaService(service: Service): ServiceCatalogItem {
     description: service.description,
     shortDescription: service.shortDescription,
     whoItIsFor: service.whoItIsFor,
+    imageUrl: service.imageUrl ?? null,
+    videoUrl: service.videoUrl ?? null,
     includedItems: Array.isArray(service.includedItems) ? (service.includedItems as string[]) : [],
     durationMinutes: service.durationMinutes > 0 ? service.durationMinutes : null,
     pricePence: service.pricePence,
@@ -100,6 +106,8 @@ export async function ensureBookableServiceBySlug(slug: string) {
       shortDescription: fallback.shortDescription,
       description: fallback.description,
       whoItIsFor: fallback.whoItIsFor,
+      imageUrl: fallback.imageUrl ?? null,
+      videoUrl: fallback.videoUrl ?? null,
       includedItems: fallback.includedItems,
       durationMinutes: fallback.durationMinutes,
       pricePence: fallback.pricePence,

@@ -34,6 +34,8 @@ export type PublicServiceRecord = {
   shortDescription: string;
   description: string;
   whoItIsFor: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
   includedItems: string[];
   durationMinutes: number;
   durationLabel: string;
@@ -51,6 +53,7 @@ export type PublicWorkshopRecord = {
   slug: string;
   title: string;
   description: string;
+  imageUrl: string | null;
   bannerImageUrl: string | null;
   startsAt: Date;
   endsAt: Date;
@@ -169,6 +172,8 @@ function mapService(service: Service, overrides: PriceOverrideMap): PublicServic
     shortDescription: service.shortDescription,
     description: service.description,
     whoItIsFor: service.whoItIsFor,
+    imageUrl: service.imageUrl ?? null,
+    videoUrl: service.videoUrl ?? null,
     includedItems: parseIncludedItems(service.includedItems),
     durationMinutes: service.durationMinutes,
     durationLabel: durationLabel(service.durationMinutes, service.bookingKind),
@@ -188,7 +193,8 @@ function mapWorkshop(workshop: Workshop & { _count?: { registrations: number } }
     slug: workshop.slug,
     title: workshop.title,
     description: workshop.description,
-    bannerImageUrl: workshop.bannerImageUrl,
+    imageUrl: workshop.imageUrl ?? workshop.bannerImageUrl ?? null,
+    bannerImageUrl: workshop.imageUrl ?? workshop.bannerImageUrl,
     startsAt: workshop.startsAt,
     endsAt: workshop.endsAt,
     timezone: workshop.timezone,
@@ -210,6 +216,7 @@ function mapTestimonial(testimonial: Testimonial) {
     name: testimonial.name,
     role: testimonial.currentRole ?? "",
     content: testimonial.content,
+    imageUrl: testimonial.imageUrl ?? null,
     rating: testimonial.rating ?? null,
     serviceType: testimonial.serviceType,
   };
@@ -326,6 +333,8 @@ export async function getPublicServices() {
       shortDescription: service.description,
       description: service.description,
       whoItIsFor: service.who,
+      imageUrl: null,
+      videoUrl: null,
       includedItems: service.included,
       durationMinutes: 0,
       durationLabel: service.duration,
@@ -350,6 +359,11 @@ export async function getPublicServices() {
   return services.map((service) => mapService(service, overrides));
 }
 
+export async function getPublicServiceBySlug(slug: string) {
+  const services = await getPublicServices();
+  return services.find((service) => service.slug === slug) ?? null;
+}
+
 export async function getManagedServices() {
   if (!prisma || isMockMode()) {
     return getPublicServices();
@@ -371,6 +385,8 @@ export async function createManagedService(input: {
   shortDescription: string;
   description: string;
   whoItIsFor: string;
+  imageUrl?: string | null;
+  videoUrl?: string | null;
   includedItemsText: string;
   durationMinutes: number;
   pricePence: number;
@@ -388,6 +404,8 @@ export async function createManagedService(input: {
       shortDescription: input.shortDescription,
       description: input.description,
       whoItIsFor: input.whoItIsFor,
+      imageUrl: input.imageUrl?.trim() || null,
+      videoUrl: input.videoUrl?.trim() || null,
       includedItems: input.includedItemsText
         .split("\n")
         .map((item) => item.trim())
@@ -419,6 +437,8 @@ export async function updateManagedService(
     shortDescription: string;
     description: string;
     whoItIsFor: string;
+    imageUrl?: string | null;
+    videoUrl?: string | null;
     includedItemsText: string;
     durationMinutes: number;
     pricePence: number;
@@ -438,6 +458,8 @@ export async function updateManagedService(
       shortDescription: input.shortDescription,
       description: input.description,
       whoItIsFor: input.whoItIsFor,
+      imageUrl: input.imageUrl?.trim() || null,
+      videoUrl: input.videoUrl?.trim() || null,
       includedItems: input.includedItemsText
         .split("\n")
         .map((item) => item.trim())
@@ -478,6 +500,7 @@ export async function getPublicWorkshops() {
       slug: workshop.slug,
       title: workshop.title,
       description: workshop.summary,
+      imageUrl: null,
       bannerImageUrl: null,
       startsAt: new Date(workshop.startsAt),
       endsAt: new Date(workshop.endsAt),
@@ -526,7 +549,7 @@ export async function createManagedWorkshop(input: {
   title: string;
   slug: string;
   description: string;
-  bannerImageUrl?: string | null;
+  imageUrl?: string | null;
   startsAt: string;
   endsAt: string;
   timezone: string;
@@ -545,7 +568,8 @@ export async function createManagedWorkshop(input: {
       title: input.title,
       slug: input.slug,
       description: input.description,
-      bannerImageUrl: input.bannerImageUrl?.trim() || null,
+      imageUrl: input.imageUrl?.trim() || null,
+      bannerImageUrl: input.imageUrl?.trim() || null,
       startsAt: new Date(input.startsAt),
       endsAt: new Date(input.endsAt),
       timezone: input.timezone,
@@ -575,7 +599,7 @@ export async function updateManagedWorkshop(
     title: string;
     slug: string;
     description: string;
-    bannerImageUrl?: string | null;
+    imageUrl?: string | null;
     startsAt: string;
     endsAt: string;
     timezone: string;
@@ -596,7 +620,8 @@ export async function updateManagedWorkshop(
       title: input.title,
       slug: input.slug,
       description: input.description,
-      bannerImageUrl: input.bannerImageUrl?.trim() || null,
+      imageUrl: input.imageUrl?.trim() || null,
+      bannerImageUrl: input.imageUrl?.trim() || null,
       startsAt: new Date(input.startsAt),
       endsAt: new Date(input.endsAt),
       timezone: input.timezone,
@@ -636,6 +661,7 @@ export async function getPublicTestimonials() {
       name: item.name,
       role: item.role,
       content: item.quote,
+      imageUrl: null,
       rating: 5,
       serviceType: item.service,
       university: item.university,
@@ -668,6 +694,7 @@ export async function createManagedTestimonial(input: {
   name: string;
   role?: string;
   content: string;
+  imageUrl?: string | null;
   rating?: number | null;
 }) {
   if (!prisma || isMockMode()) throw new Error("Testimonials require the database.");
@@ -677,6 +704,7 @@ export async function createManagedTestimonial(input: {
       name: input.name,
       headline: input.role?.trim() || "Client feedback",
       content: input.content,
+      imageUrl: input.imageUrl?.trim() || null,
       currentRole: input.role?.trim() || null,
       serviceType: "General",
       rating: input.rating ?? 5,
@@ -693,6 +721,7 @@ export async function updateManagedTestimonial(
     name: string;
     role?: string;
     content: string;
+    imageUrl?: string | null;
     rating?: number | null;
   },
 ) {
@@ -704,6 +733,7 @@ export async function updateManagedTestimonial(
       name: input.name,
       headline: input.role?.trim() || "Client feedback",
       content: input.content,
+      imageUrl: input.imageUrl?.trim() || null,
       currentRole: input.role?.trim() || null,
       rating: input.rating ?? 5,
     },

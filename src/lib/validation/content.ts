@@ -1,12 +1,31 @@
 import { BookingKind, InquiryStatus, ReviewStatus, WorkshopStatus } from "@prisma/client";
 import { z } from "zod";
 
+const optionalUrl = z.string().url().optional().or(z.literal("")).nullable();
+
+const youtubeUrlSchema = z
+  .string()
+  .optional()
+  .or(z.literal(""))
+  .nullable()
+  .refine((value) => {
+    if (!value) return true;
+    try {
+      const url = new URL(value);
+      return ["youtube.com", "www.youtube.com", "youtu.be", "m.youtube.com"].includes(url.hostname);
+    } catch {
+      return false;
+    }
+  }, "Please enter a valid YouTube URL.");
+
 export const serviceAdminSchema = z.object({
   title: z.string().min(3).max(120),
   slug: z.string().min(3).max(120),
   shortDescription: z.string().min(10).max(240),
   description: z.string().min(20).max(2000),
   whoItIsFor: z.string().min(10).max(600),
+  imageUrl: optionalUrl,
+  videoUrl: youtubeUrlSchema,
   includedItemsText: z.string().min(3).max(1500),
   durationMinutes: z.coerce.number().int().min(0).max(480),
   pricePence: z.coerce.number().int().min(0),
@@ -20,6 +39,7 @@ export const testimonialAdminSchema = z.object({
   name: z.string().min(2).max(120),
   role: z.string().max(120).optional().or(z.literal("")),
   content: z.string().min(10).max(2000),
+  imageUrl: optionalUrl,
   rating: z.coerce.number().int().min(1).max(5).optional().nullable(),
 });
 
@@ -41,7 +61,7 @@ export const workshopAdminSchema = z.object({
   title: z.string().min(3).max(180),
   slug: z.string().min(3).max(180),
   description: z.string().min(20).max(3000),
-  bannerImageUrl: z.string().url().optional().or(z.literal("")).nullable(),
+  imageUrl: optionalUrl,
   startsAt: z.string().datetime(),
   endsAt: z.string().datetime(),
   timezone: z.string().min(3).max(80).default("Europe/London"),

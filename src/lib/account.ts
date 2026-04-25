@@ -164,3 +164,16 @@ export async function saveUploadedDocumentForUser(
     },
   });
 }
+
+export async function getPublicMediaDocument(documentId: string) {
+  if (isMockMode() || !prisma) {
+    return null;
+  }
+
+  return prisma.uploadedDocument.findFirst({
+    where: {
+      id: documentId,
+      visibility: "PUBLIC",
+    },
+  });
+}

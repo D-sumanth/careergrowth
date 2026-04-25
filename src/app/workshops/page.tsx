@@ -20,18 +20,12 @@ export default async function WorkshopsPage() {
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {workshops.map((workshop) => (
             <Card key={workshop.slug} className="overflow-hidden">
-              <div
-                className="h-40 bg-gradient-to-br from-slate-900 via-slate-800 to-amber-600"
-                style={
-                  workshop.bannerImageUrl
-                    ? {
-                        backgroundImage: `linear-gradient(rgba(15,23,42,0.4), rgba(217,119,6,0.3)), url(${workshop.bannerImageUrl})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }
-                    : undefined
-                }
-              />
+              <div className="aspect-[16/9] bg-gradient-to-br from-slate-900 via-slate-800 to-amber-600">
+                {workshop.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={workshop.imageUrl} alt={workshop.title} className="h-full w-full object-cover" />
+                ) : null}
+              </div>
               <div className="space-y-4 p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{workshop.status.replaceAll("_", " ")}</p>
                 <h2 className="font-serif text-3xl text-slate-950">{workshop.title}</h2>

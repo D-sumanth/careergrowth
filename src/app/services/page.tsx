@@ -21,7 +21,14 @@ export default async function ServicesPage() {
         </div>
         <div className="grid gap-6">
           {services.map((service) => (
-            <Card key={service.slug} className="grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <Card key={service.slug} className="overflow-hidden">
+              {service.imageUrl ? (
+                <div className="aspect-[16/7] w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={service.imageUrl} alt={service.title} className="h-full w-full object-cover" />
+                </div>
+              ) : null}
+              <div className="grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr]">
               <div>
                 <h2 className="font-serif text-3xl text-slate-950">{service.title}</h2>
                 <p className="mt-3 text-base leading-8 text-slate-600">{service.description}</p>
@@ -44,10 +51,14 @@ export default async function ServicesPage() {
                   <ButtonLink href={`/services/${service.slug}/book`}>
                     {service.isBookable ? "Book session" : "Request support"}
                   </ButtonLink>
+                  <ButtonLink href={`/services/${service.slug}`} variant="secondary">
+                    View details
+                  </ButtonLink>
                   <ButtonLink href="/pricing" variant="secondary">
                     View pricing
                   </ButtonLink>
                 </div>
+              </div>
               </div>
             </Card>
           ))}

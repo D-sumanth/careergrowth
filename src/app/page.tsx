@@ -90,13 +90,23 @@ export default async function Home() {
           />
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {featuredServices.map((service) => (
-              <Card key={service.slug} className={`bg-gradient-to-br ${service.accent} p-6`}>
+              <Card key={service.slug} className="overflow-hidden">
+                {service.imageUrl ? (
+                  <div className="aspect-[4/3]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={service.imageUrl} alt={service.title} className="h-full w-full object-cover" />
+                  </div>
+                ) : (
+                  <div className={`aspect-[4/3] bg-gradient-to-br ${service.accent}`} />
+                )}
+                <div className={`p-6 ${service.imageUrl ? "bg-white" : `bg-gradient-to-br ${service.accent}`}`}>
                 <h3 className="font-serif text-2xl text-slate-950">{service.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-700">{service.description}</p>
                 <p className="mt-4 text-sm font-semibold text-slate-900">{service.durationLabel}</p>
                 <div className="mt-1 flex items-center gap-2 text-sm text-slate-700">
                   {service.compareAtPricePence ? <span className="line-through opacity-60">{formatCurrency(service.compareAtPricePence)}</span> : null}
                   <span>{formatCurrency(service.pricePence)}</span>
+                </div>
                 </div>
               </Card>
             ))}
@@ -135,14 +145,31 @@ export default async function Home() {
               <div className="grid gap-4">
                 {testimonials.map((item) => (
                   <Card key={item.name} className="p-6">
+                    <div className="flex items-center gap-4">
+                      {item.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.imageUrl} alt={item.name} className="h-12 w-12 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-amber-800">
+                          {item.name
+                            .split(/\s+/)
+                            .filter(Boolean)
+                            .slice(0, 2)
+                            .map((part) => part[0]?.toUpperCase() ?? "")
+                            .join("")}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-slate-950">{item.name}</p>
+                        <p className="text-sm text-slate-500">{item.role || item.university || "Career Growth Studio client"}</p>
+                      </div>
+                    </div>
                     <div className="flex items-center gap-2 text-amber-600">
                       {Array.from({ length: 5 }).map((_, index) => (
                         <Sparkles key={index} className="h-4 w-4" />
                       ))}
                     </div>
                     <p className="mt-4 text-base leading-8 text-slate-700">&ldquo;{item.content}&rdquo;</p>
-                    <p className="mt-4 font-semibold text-slate-950">{item.name}</p>
-                    <p className="text-sm text-slate-500">{item.role || item.university || "Career Growth Studio client"}</p>
                   </Card>
                 ))}
               </div>
@@ -153,6 +180,10 @@ export default async function Home() {
                 <div className="mt-6 space-y-4">
                   {workshops.slice(0, 2).map((workshop) => (
                     <div key={workshop.slug} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      {workshop.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={workshop.imageUrl} alt={workshop.title} className="mb-4 aspect-video w-full rounded-2xl object-cover" />
+                      ) : null}
                       <p className="text-sm uppercase tracking-[0.16em] text-amber-200">{workshop.status.replaceAll("_", " ")}</p>
                       <p className="mt-2 font-semibold">{workshop.title}</p>
                       <p className="mt-2 text-sm text-slate-300">{formatDateTime(workshop.startsAt, workshop.timezone)}</p>
