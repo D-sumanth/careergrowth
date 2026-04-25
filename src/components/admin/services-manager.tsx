@@ -153,8 +153,8 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-      <Card className="p-6">
+    <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] xl:grid-cols-[0.78fr_1.22fr]">
+      <Card className="p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-semibold text-slate-950">Existing services</h2>
           <Button type="button" variant="secondary" onClick={() => handleSelect(null)}>
@@ -185,9 +185,9 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="font-semibold text-slate-950">{selectedId ? "Edit service" : "Create service"}</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Title</span>
             <input value={form.title} onChange={(e) => updateForm("title", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
@@ -196,19 +196,19 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
             <span>Slug</span>
             <input value={form.slug} onChange={(e) => updateForm("slug", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Short description</span>
             <input value={form.shortDescription} onChange={(e) => updateForm("shortDescription", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Description</span>
             <textarea value={form.description} onChange={(e) => updateForm("description", e.target.value)} className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Who it is for</span>
             <textarea value={form.whoItIsFor} onChange={(e) => updateForm("whoItIsFor", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <MediaUploadField
               label="Cover image"
               value={form.imageUrl}
@@ -216,12 +216,12 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
               helperText="Upload a JPEG, PNG, or WebP image up to 5MB. This image appears at the top of the service card."
             />
           </div>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>YouTube video URL (optional)</span>
             <input value={form.videoUrl} onChange={(e) => updateForm("videoUrl", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" placeholder="https://www.youtube.com/watch?v=..." />
             <p className="text-xs leading-6 text-slate-500">Shown on the service detail page in a responsive video section.</p>
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Included items (one per line)</span>
             <textarea value={form.includedItemsText} onChange={(e) => updateForm("includedItemsText", e.target.value)} className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>

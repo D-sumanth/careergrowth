@@ -50,13 +50,18 @@ export function MediaUploadField({ label, value, onChange, helperText }: MediaUp
     <div className="space-y-3">
       <div className="space-y-2 text-sm text-slate-700">
         <span>{label}</span>
-        <input value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" placeholder="/api/media/..." />
+        <input
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm"
+          placeholder="/api/media/... or https://..."
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <label
           htmlFor={inputId}
-          className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+          className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
         >
           {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
           {uploading ? "Uploading..." : "Upload image"}
@@ -73,7 +78,7 @@ export function MediaUploadField({ label, value, onChange, helperText }: MediaUp
       {helperText ? <p className="text-xs leading-6 text-slate-500">{helperText}</p> : null}
 
       {value ? (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
+        <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
           <div className="aspect-video">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={value} alt={`${label} preview`} className="h-full w-full object-cover" />

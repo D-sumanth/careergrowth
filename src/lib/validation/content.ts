@@ -1,7 +1,22 @@
 import { BookingKind, InquiryStatus, ReviewStatus, WorkshopStatus } from "@prisma/client";
 import { z } from "zod";
 
-const optionalUrl = z.string().url().optional().or(z.literal("")).nullable();
+const relativeOrAbsoluteUrl = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) return true;
+    if (value.startsWith("/")) return true;
+
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }, "Please enter a valid URL or media path.");
+
+const optionalUrl = relativeOrAbsoluteUrl.optional().or(z.literal("")).nullable();
 
 const youtubeUrlSchema = z
   .string()

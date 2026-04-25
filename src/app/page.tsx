@@ -24,15 +24,15 @@ export default async function Home() {
     <>
       <SiteHeader />
       <main>
-        <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-20 lg:py-24">
-          <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div className="space-y-8">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div className="space-y-6">
               <Badge className="bg-amber-100 text-amber-900">{siteConfig.heroBadge}</Badge>
-              <div className="space-y-6">
-                <h1 className="max-w-4xl font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+              <div className="space-y-4">
+                <h1 className="max-w-4xl font-serif text-[2.35rem] font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
                   {siteConfig.heroTitle}
                 </h1>
-                <p className="max-w-2xl text-lg leading-8 text-slate-600">
+                <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
                   {siteConfig.heroDescription}
                 </p>
               </div>
@@ -42,7 +42,7 @@ export default async function Home() {
                   Ask a Question
                 </ButtonLink>
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {[
                   ["100+ sessions", "Built around practical support for CVs, interviews, and career strategy"],
                   ["International-student focus", "Guidance shaped by the real pressure of sponsorship, rejections, and UK hiring cycles"],
@@ -82,13 +82,13 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <SectionHeading
             eyebrow="Services"
             title="Support that meets students where they are"
             description="The public profile and posts consistently centre on practical guidance for CVs, interviews, strategy, sponsorship awareness, and navigating the UK job market with more confidence."
           />
-          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {featuredServices.map((service) => (
               <Card key={service.slug} className="overflow-hidden">
                 {service.imageUrl ? (
@@ -99,27 +99,27 @@ export default async function Home() {
                 ) : (
                   <div className={`aspect-[4/3] bg-gradient-to-br ${service.accent}`} />
                 )}
-                <div className={`p-6 ${service.imageUrl ? "bg-white" : `bg-gradient-to-br ${service.accent}`}`}>
-                <h3 className="font-serif text-2xl text-slate-950">{service.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-700">{service.description}</p>
-                <p className="mt-4 text-sm font-semibold text-slate-900">{service.durationLabel}</p>
-                <div className="mt-1 flex items-center gap-2 text-sm text-slate-700">
-                  {service.compareAtPricePence ? <span className="line-through opacity-60">{formatCurrency(service.compareAtPricePence)}</span> : null}
-                  <span>{formatCurrency(service.pricePence)}</span>
-                </div>
+                <div className={`p-5 sm:p-6 ${service.imageUrl ? "bg-white" : `bg-gradient-to-br ${service.accent}`}`}>
+                  <h3 className="font-serif text-2xl text-slate-950">{service.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-700">{service.description}</p>
+                  <p className="mt-4 text-sm font-semibold text-slate-900">{service.durationLabel}</p>
+                  <div className="mt-1 flex items-center gap-2 text-sm text-slate-700">
+                    {service.compareAtPricePence ? <span className="line-through opacity-60">{formatCurrency(service.compareAtPricePence)}</span> : null}
+                    <span>{formatCurrency(service.pricePence)}</span>
+                  </div>
                 </div>
               </Card>
             ))}
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <SectionHeading
             eyebrow="How it works"
             title="A calmer, clearer booking flow"
             description="The experience is designed to reduce confusion. Students should be able to understand the offer quickly, book support with minimal friction, and leave with clearer next steps."
           />
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
               ["Choose the right support", "Find the session, review, workshop, or structured support option that fits your stage of the UK job search."],
               ["Book with clarity", "Reserve support without guessing what is included, when it happens, or who it is for."],
@@ -134,8 +134,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr]">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+          <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
             <div className="space-y-6">
               <SectionHeading
                 eyebrow="Success stories"
@@ -144,7 +144,7 @@ export default async function Home() {
               />
               <div className="grid gap-4">
                 {testimonials.map((item) => (
-                  <Card key={item.name} className="p-6">
+                  <Card key={item.name} className="p-5 sm:p-6">
                     <div className="flex items-center gap-4">
                       {item.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -169,7 +169,7 @@ export default async function Home() {
                         <Sparkles key={index} className="h-4 w-4" />
                       ))}
                     </div>
-                    <p className="mt-4 text-base leading-8 text-slate-700">&ldquo;{item.content}&rdquo;</p>
+                    <p className="mt-4 text-base leading-7 text-slate-700">&ldquo;{item.content}&rdquo;</p>
                   </Card>
                 ))}
               </div>
@@ -215,13 +215,13 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <SectionHeading
             eyebrow="Resources"
             title="Practical guidance students can use between sessions"
             description="The resource topics now reflect the kind of public content Aditi shares: common job-search mistakes, sponsorship-aware decisions, and practical UK job-search resources."
           />
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
             {blogPosts.map((post) => (
               <Card key={post.slug} className="p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{post.topic}</p>
@@ -235,8 +235,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
-          <div className="grid gap-10 lg:grid-cols-[1fr_0.85fr]">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[1fr_0.85fr]">
             <div>
               <SectionHeading
                 eyebrow="FAQ"

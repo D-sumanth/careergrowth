@@ -82,8 +82,8 @@ export function TestimonialsManager({ items }: { items: TestimonialRecord[] }) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-      <Card className="p-6">
+    <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] xl:grid-cols-[0.78fr_1.22fr]">
+      <Card className="p-5 sm:p-6">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-slate-950">Testimonials</h2>
           <Button type="button" variant="secondary" onClick={() => select(null)}>
@@ -109,7 +109,7 @@ export function TestimonialsManager({ items }: { items: TestimonialRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={submit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={submit} className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="font-semibold text-slate-950">{selected ? "Edit testimonial" : "Create testimonial"}</h2>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Name</span>

@@ -159,8 +159,8 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-      <Card className="p-6">
+    <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] xl:grid-cols-[0.78fr_1.22fr]">
+      <Card className="p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-semibold text-slate-950">Existing workshops</h2>
           <Button type="button" variant="secondary" onClick={() => select(null)}>
@@ -192,9 +192,9 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={submit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={submit} className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="font-semibold text-slate-950">{selected ? "Edit workshop" : "Create workshop"}</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Title</span>
             <input value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
@@ -203,11 +203,11 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
             <span>Slug</span>
             <input value={form.slug} onChange={(e) => setForm((c) => ({ ...c, slug: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Description</span>
             <textarea value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="min-h-32 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
           </label>
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <MediaUploadField
               label="Workshop cover image"
               value={form.imageUrl}
@@ -248,11 +248,11 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
               <option value="CANCELLED">Cancelled</option>
             </select>
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Replay URL</span>
             <input value={form.replayUrl} onChange={(e) => setForm((c) => ({ ...c, replayUrl: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
           </label>
-          <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
+          <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Download URL</span>
             <input value={form.downloadUrl} onChange={(e) => setForm((c) => ({ ...c, downloadUrl: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
           </label>
