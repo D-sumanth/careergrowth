@@ -49,6 +49,9 @@ export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashb
           <div className="hidden items-center gap-2 lg:flex xl:shrink-0">
             {session ? (
               <>
+                <div className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 xl:inline-flex">
+                  Signed in as <span className="ml-1 font-semibold text-slate-900">{session.name}</span>
+                </div>
                 <ButtonLink href={dashboardHref} variant={mode === "dashboard" ? "primary" : "secondary"} className="whitespace-nowrap">
                   {session.role === "ADMIN" ? "Admin console" : "Dashboard"}
                 </ButtonLink>
@@ -58,6 +61,9 @@ export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashb
               <>
                 <ButtonLink href="/sign-in" variant="ghost" className="hidden whitespace-nowrap lg:inline-flex">
                   Sign in
+                </ButtonLink>
+                <ButtonLink href="/sign-up" variant="secondary" className="hidden whitespace-nowrap xl:inline-flex">
+                  Create account
                 </ButtonLink>
                 <ButtonLink href="/services" className="whitespace-nowrap">
                   Book a Session
@@ -90,6 +96,9 @@ export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashb
                     <>
                       <ButtonLink href="/services" className="w-full">
                         Book a Session
+                      </ButtonLink>
+                      <ButtonLink href="/sign-up" variant="secondary" className="w-full">
+                        Create account
                       </ButtonLink>
                       <ButtonLink href="/sign-in" variant="secondary" className="w-full">
                         Sign in

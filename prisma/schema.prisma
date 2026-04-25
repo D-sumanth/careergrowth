@@ -104,6 +104,7 @@ model User {
   invoices              Invoice[]
   notifications         Notification[]
   sessions              AuthSession[]
+  oauthAccounts         OAuthAccount[]
   passwordResetTokens   PasswordResetToken[]
   verificationTokens    EmailVerificationToken[]
   auditLogs             AuditLog[]             @relation("AuditActor")
@@ -408,6 +409,20 @@ model AuditLog {
   actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
 }
 
+model OAuthAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  email             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
 model AuthSession {
   id        String   @id @default(cuid())
   userId    String
@@ -415,6 +430,8 @@ model AuthSession {
   expiresAt DateTime
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }
 
 model PasswordResetToken {
@@ -425,6 +442,8 @@ model PasswordResetToken {
   usedAt    DateTime?
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }
 
 model EmailVerificationToken {
@@ -435,4 +454,6 @@ model EmailVerificationToken {
   verifiedAt DateTime?
   createdAt  DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }

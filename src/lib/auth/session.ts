@@ -15,23 +15,25 @@ export type AppSession = {
 const SESSION_COOKIE = "career_console_session";
 const encoder = new TextEncoder();
 
-export async function createSessionToken(session: AppSession) {
+export async function createSessionToken(session: AppSession, rememberMe = false) {
+  const sessionDurationDays = rememberMe ? Math.max(env.SESSION_DURATION_DAYS, 30) : env.SESSION_DURATION_DAYS;
   return new SignJWT(session)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(`${sessionDurationDays}d`)
     .sign(encoder.encode(env.AUTH_SECRET));
 }
 
-export async function setSessionCookie(session: AppSession) {
-  const token = await createSessionToken(session);
+export async function setSessionCookie(session: AppSession, options?: { rememberMe?: boolean }) {
+  const rememberMe = options?.rememberMe ?? false;
+  const token = await createSessionToken(session, rememberMe);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    ...(rememberMe ? { maxAge: 60 * 60 * 24 * Math.max(env.SESSION_DURATION_DAYS, 30) } : {}),
   });
 }
 

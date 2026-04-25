@@ -1,13 +1,18 @@
-import { jsonError, jsonOk, parseJson } from "@/lib/http";
+import { parseJson } from "@/lib/http";
+import { assertRateLimit } from "@/lib/rate-limit";
+import { authErrorFromException, authOk } from "@/lib/auth/errors";
+import { assertAllowedAuthOrigin } from "@/lib/auth/request";
+import { resetPasswordWithToken } from "@/lib/auth/users";
 import { resetPasswordSchema } from "@/lib/validation/schemas";
 
 export async function POST(request: Request) {
   try {
-    await parseJson(request, resetPasswordSchema);
-    return jsonOk({
-      message: "Password reset flow validated. Persist the reset token in PostgreSQL and update the user password when wiring the final production flow.",
-    });
+    assertAllowedAuthOrigin(request);
+    assertRateLimit(`reset-password:${request.headers.get("x-forwarded-for") ?? "local"}`, 6, 60_000);
+    const payload = await parseJson(request, resetPasswordSchema);
+    await resetPasswordWithToken(payload.token, payload.password);
+    return authOk({ successState: "password-reset-complete" });
   } catch (error) {
-    return jsonError(error instanceof Error ? error.message : "Unable to reset password.");
+    return authErrorFromException(error);
   }
 }

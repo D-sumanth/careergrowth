@@ -1,28 +1,49 @@
 import { z } from "zod";
 
 export const signUpSchema = z.object({
-  name: z.string().min(2).max(80),
-  email: z.email(),
+  name: z.string().trim().min(2, "Please enter your full name.").max(80),
+  email: z.email("Please enter a valid email address.").transform((value) => value.toLowerCase()),
   password: z
     .string()
-    .min(10, "Use at least 10 characters.")
+    .min(8, "Use at least 8 characters.")
     .regex(/[A-Z]/, "Add at least one uppercase letter.")
     .regex(/[a-z]/, "Add at least one lowercase letter.")
-    .regex(/[0-9]/, "Add at least one number."),
+    .regex(/[0-9]/, "Add at least one number.")
+    .regex(/[^A-Za-z0-9]/, "Add at least one special character."),
+  confirmPassword: z.string(),
+  acceptTerms: z.boolean().refine((value) => value, "Please accept the Terms and Privacy Policy."),
+}).superRefine((value, context) => {
+  if (value.password !== value.confirmPassword) {
+    context.addIssue({
+      code: "custom",
+      path: ["confirmPassword"],
+      message: "Passwords do not match.",
+    });
+  }
 });
 
 export const signInSchema = z.object({
-  email: z.email(),
-  password: z.string().min(1),
+  email: z.email("Please enter a valid email address.").transform((value) => value.toLowerCase()),
+  password: z.string().min(1, "Password is required."),
+  rememberMe: z.boolean().optional().default(false),
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.email(),
+  email: z.email("Please enter a valid email address.").transform((value) => value.toLowerCase()),
 });
 
 export const resetPasswordSchema = z.object({
-  token: z.string().min(20),
+  token: z.string().min(20, "That reset link is invalid."),
   password: signUpSchema.shape.password,
+  confirmPassword: z.string(),
+}).superRefine((value, context) => {
+  if (value.password !== value.confirmPassword) {
+    context.addIssue({
+      code: "custom",
+      path: ["confirmPassword"],
+      message: "Passwords do not match.",
+    });
+  }
 });
 
 export const newsletterSchema = z.object({
