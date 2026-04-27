@@ -20,6 +20,10 @@ function groupSources(items: Array<{ source: string | null }>) {
     .slice(0, 8);
 }
 
+function buildSourceLabel(source?: string | null) {
+  return source?.trim() || "unknown";
+}
+
 export async function getAdminOverviewData() {
   if (isMockMode() || !prisma) {
     return {
@@ -75,19 +79,32 @@ export async function getAdminOverviewData() {
 
 export async function getAdminUsersData() {
   if (isMockMode() || !prisma) {
-    return { totalUsers: 0, users: [] };
+    return { totalUsers: 0, users: [], sourceBreakdown: [] };
   }
 
   const users = await prisma.user.findMany({
     include: {
       profile: true,
-      _count: { select: { bookings: true, uploadedDocuments: true, notifications: true } },
+      _count: {
+        select: {
+          bookings: true,
+          uploadedDocuments: true,
+          notifications: true,
+          payments: true,
+          inquiries: true,
+          reviewRequests: true,
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
     take: 50,
   });
 
-  return { totalUsers: users.length, users };
+  return {
+    totalUsers: users.length,
+    users,
+    sourceBreakdown: groupSources(users.map((user) => ({ source: user.acquisitionSource }))),
+  };
 }
 
 export async function getAdminBookingsData() {
@@ -151,7 +168,7 @@ export async function getAdminContentData() {
 
 export async function getAdminInquiriesData() {
   if (isMockMode() || !prisma) {
-    return { inquiries: [], openCount: 0 };
+    return { inquiries: [], openCount: 0, dueFollowUps: 0, sourceBreakdown: [] };
   }
 
   const inquiries = await prisma.inquiry.findMany({
@@ -159,10 +176,13 @@ export async function getAdminInquiriesData() {
     orderBy: { createdAt: "desc" },
     take: 50,
   });
+  const now = new Date();
 
   return {
     inquiries,
     openCount: inquiries.filter((inquiry) => inquiry.status !== InquiryStatus.CLOSED).length,
+    dueFollowUps: inquiries.filter((inquiry) => inquiry.followUpAt && inquiry.followUpAt <= now && inquiry.status !== InquiryStatus.CLOSED).length,
+    sourceBreakdown: groupSources(inquiries.map((inquiry) => ({ source: inquiry.source }))),
   };
 }
 
@@ -238,6 +258,8 @@ export async function getAdminAnalyticsData() {
       sourceBreakdown: [],
       subscriberSources: [],
       monthlyFunnel: [],
+      servicePerformance: [],
+      workshopPerformance: [],
     };
   }
 
@@ -289,6 +311,136 @@ export async function getAdminAnalyticsData() {
     ]),
     subscriberSources: groupSources(subscribers),
     monthlyFunnel,
+    servicePerformance: await prisma.service.findMany({
+      select: {
+        id: true,
+        title: true,
+        pricePence: true,
+        bookings: {
+          select: { id: true, paymentStatus: true },
+        },
+      },
+      orderBy: { title: "asc" },
+    }).then((services) =>
+      services.map((service) => ({
+        id: service.id,
+        title: service.title,
+        pricePence: service.pricePence,
+        bookings: service.bookings.length,
+        paidBookings: service.bookings.filter((booking) => booking.paymentStatus === PaymentStatus.SUCCEEDED).length,
+      })),
+    ),
+    workshopPerformance: await prisma.workshop.findMany({
+      select: {
+        id: true,
+        title: true,
+        pricePence: true,
+        registrations: {
+          select: { id: true, status: true, waitlisted: true },
+        },
+      },
+      orderBy: { startsAt: "desc" },
+      take: 12,
+    }).then((workshops) =>
+      workshops.map((workshop) => ({
+        id: workshop.id,
+        title: workshop.title,
+        pricePence: workshop.pricePence,
+        registrations: workshop.registrations.length,
+        paidRegistrations: workshop.registrations.filter((registration) => registration.status === PaymentStatus.SUCCEEDED).length,
+        waitlisted: workshop.registrations.filter((registration) => registration.waitlisted).length,
+      })),
+    ),
+  };
+}
+
+export async function getAdminUserDetail(userId: string) {
+  if (isMockMode() || !prisma) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      profile: true,
+      bookings: {
+        include: { service: true, payment: true },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+      payments: {
+        include: { booking: { include: { service: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+      reviewRequests: {
+        include: { documents: true },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+      inquiries: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+      uploadedDocuments: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+      _count: {
+        select: {
+          bookings: true,
+          uploadedDocuments: true,
+          payments: true,
+          inquiries: true,
+          reviewRequests: true,
+        },
+      },
+    },
+  });
+
+  if (!user) return null;
+
+  const timeline = [
+    ...user.bookings.map((booking) => ({
+      id: `booking-${booking.id}`,
+      type: "Booking",
+      label: booking.service?.title ?? "Session booking",
+      detail: booking.status,
+      createdAt: booking.createdAt,
+    })),
+    ...user.payments.map((payment) => ({
+      id: `payment-${payment.id}`,
+      type: "Payment",
+      label: payment.booking?.service?.title ?? "Payment",
+      detail: payment.status,
+      createdAt: payment.createdAt,
+    })),
+    ...user.inquiries.map((inquiry) => ({
+      id: `inquiry-${inquiry.id}`,
+      type: "Inquiry",
+      label: inquiry.subject,
+      detail: `${inquiry.status} via ${buildSourceLabel(inquiry.source)}`,
+      createdAt: inquiry.createdAt,
+    })),
+    ...user.reviewRequests.map((review) => ({
+      id: `review-${review.id}`,
+      type: "Review",
+      label: review.jobTarget,
+      detail: review.status,
+      createdAt: review.createdAt,
+    })),
+    ...user.uploadedDocuments.map((document) => ({
+      id: `document-${document.id}`,
+      type: "Document",
+      label: document.fileName,
+      detail: document.visibility,
+      createdAt: document.createdAt,
+    })),
+  ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+  return {
+    user,
+    timeline,
   };
 }
 

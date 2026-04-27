@@ -4,12 +4,15 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-empty-state";
 import { requireSession } from "@/lib/auth/session";
 import { getAdminAnalyticsData } from "@/lib/admin";
+import { formatCurrency } from "@/lib/utils";
 
 export default async function AdminAnalyticsPage() {
   await requireSession(["ADMIN"]);
   const data = await getAdminAnalyticsData();
   const maxSourceCount = Math.max(...data.sourceBreakdown.map((item) => item.count), 1);
   const maxMonthlyValue = Math.max(...data.monthlyFunnel.flatMap((item) => [item.inquiries, item.signUps, item.bookings]), 1);
+  const maxServiceBookings = Math.max(...data.servicePerformance.map((item) => item.bookings), 1);
+  const maxWorkshopRegistrations = Math.max(...data.workshopPerformance.map((item) => item.registrations), 1);
 
   return (
     <DashboardShell
@@ -112,6 +115,86 @@ export default async function AdminAnalyticsPage() {
           />
         )}
       </AdminSectionCard>
+
+      <div className="grid gap-5 xl:grid-cols-2">
+        <AdminSectionCard title="Service performance" description="Which services are attracting bookings, and how many of them convert into paid sessions.">
+          {data.servicePerformance.length ? (
+            <div className="space-y-4">
+              {data.servicePerformance.map((service) => (
+                <div key={service.id} className="rounded-2xl bg-slate-50 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-slate-950">{service.title}</p>
+                      <p className="mt-1 text-sm text-slate-500">{formatCurrency(service.pricePence)}</p>
+                    </div>
+                    <div className="text-right text-sm text-slate-600">
+                      <p>{service.bookings} bookings</p>
+                      <p>{service.paidBookings} paid</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    <div className="h-2 rounded-full bg-white">
+                      <div
+                        className="h-2 rounded-full bg-slate-950"
+                        style={{ width: `${Math.max((service.bookings / maxServiceBookings) * 100, service.bookings ? 10 : 0)}%` }}
+                      />
+                    </div>
+                    <div className="h-2 rounded-full bg-white">
+                      <div
+                        className="h-2 rounded-full bg-emerald-500"
+                        style={{ width: `${Math.max((service.paidBookings / maxServiceBookings) * 100, service.paidBookings ? 10 : 0)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <DashboardEmptyState
+              title="No service performance yet"
+              description="As bookings come in, you’ll see which services are driving the strongest conversion here."
+            />
+          )}
+        </AdminSectionCard>
+
+        <AdminSectionCard title="Workshop performance" description="Track registrations, paid seats, and waitlist pressure across workshop offers.">
+          {data.workshopPerformance.length ? (
+            <div className="space-y-4">
+              {data.workshopPerformance.map((workshop) => (
+                <div key={workshop.id} className="rounded-2xl bg-slate-50 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-slate-950">{workshop.title}</p>
+                      <p className="mt-1 text-sm text-slate-500">{formatCurrency(workshop.pricePence)}</p>
+                    </div>
+                    <div className="text-right text-sm text-slate-600">
+                      <p>{workshop.registrations} registrations</p>
+                      <p>{workshop.paidRegistrations} paid</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    <div className="h-2 rounded-full bg-white">
+                      <div
+                        className="h-2 rounded-full bg-slate-950"
+                        style={{ width: `${Math.max((workshop.registrations / maxWorkshopRegistrations) * 100, workshop.registrations ? 10 : 0)}%` }}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span>{workshop.waitlisted} waitlisted</span>
+                      <span>{workshop.paidRegistrations} paid seats</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <DashboardEmptyState
+              title="No workshop performance yet"
+              description="Once workshops start collecting registrations, you’ll be able to compare uptake and waitlist demand here."
+            />
+          )}
+        </AdminSectionCard>
+      </div>
     </DashboardShell>
   );
 }

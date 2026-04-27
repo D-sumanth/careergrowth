@@ -38,6 +38,24 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
   const [owner, setOwner] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [followUpAt, setFollowUpAt] = useState<Record<string, string>>({});
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [sourceFilter, setSourceFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+
+  const sources = [...new Set(items.map((item) => item.source?.trim()).filter(Boolean))];
+  const categories = [...new Set(items.map((item) => item.category))];
+  const filteredItems = items.filter((item) => {
+    const matchesQuery =
+      !query ||
+      [item.name, item.email, item.subject, item.message]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(query.toLowerCase()));
+    const matchesStatus = statusFilter === "ALL" || item.status === statusFilter;
+    const matchesSource = sourceFilter === "ALL" || (item.source?.trim() || "unknown") === sourceFilter;
+    const matchesCategory = categoryFilter === "ALL" || item.category === categoryFilter;
+    return matchesQuery && matchesStatus && matchesSource && matchesCategory;
+  });
 
   async function save(item: InquiryRecord) {
     setPendingId(item.id);
@@ -57,7 +75,52 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
 
   return (
     <div className="space-y-4">
-      {items.map((item) => (
+      <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-2 xl:grid-cols-4">
+        <label className="space-y-2 text-sm text-slate-700">
+          <span>Search</span>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full rounded-2xl border border-slate-300 px-4 py-3"
+            placeholder="Name, email, subject"
+          />
+        </label>
+        <label className="space-y-2 text-sm text-slate-700">
+          <span>Status</span>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+            <option value="ALL">All statuses</option>
+            <option value="NEW">New</option>
+            <option value="IN_PROGRESS">In progress</option>
+            <option value="RESPONDED">Responded</option>
+            <option value="CLOSED">Closed</option>
+          </select>
+        </label>
+        <label className="space-y-2 text-sm text-slate-700">
+          <span>Source</span>
+          <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+            <option value="ALL">All sources</option>
+            {sources.map((source) => (
+              <option key={source} value={source}>
+                {source}
+              </option>
+            ))}
+            <option value="unknown">unknown</option>
+          </select>
+        </label>
+        <label className="space-y-2 text-sm text-slate-700">
+          <span>Category</span>
+          <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+            <option value="ALL">All categories</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category.replaceAll("_", " ")}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {filteredItems.map((item) => (
         <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
@@ -123,6 +186,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
           </div>
         </div>
       ))}
+      {!filteredItems.length ? <p className="text-sm text-slate-500">No inquiries match the current filters.</p> : null}
     </div>
   );
 }
