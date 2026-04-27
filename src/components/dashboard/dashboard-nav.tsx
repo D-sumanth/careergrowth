@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BarChart3,
   BookOpenText,
   BriefcaseBusiness,
   CalendarClock,
@@ -53,7 +54,9 @@ const adminItems = [
   ["Posts", "/admin/posts", BookOpenText],
   ["Testimonials", "/admin/testimonials", MessageSquareQuote],
   ["FAQs", "/admin/faqs", CircleHelp],
+  ["CRM", "/admin/crm", Mail],
   ["Inquiries", "/admin/inquiries", Mail],
+  ["Analytics", "/admin/analytics", BarChart3],
   ["Reviews", "/admin/reviews", FileStack],
   ["Payments", "/admin/payments", CreditCard],
 ] as const;

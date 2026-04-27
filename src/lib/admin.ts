@@ -6,6 +6,20 @@ function sumRevenue(amounts: Array<{ amountPence: number }>) {
   return amounts.reduce((total, item) => total + item.amountPence, 0);
 }
 
+function groupSources(items: Array<{ source: string | null }>) {
+  const map = new Map<string, number>();
+
+  for (const item of items) {
+    const key = item.source?.trim() || "unknown";
+    map.set(key, (map.get(key) ?? 0) + 1);
+  }
+
+  return [...map.entries()]
+    .map(([source, count]) => ({ source, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+}
+
 export async function getAdminOverviewData() {
   if (isMockMode() || !prisma) {
     return {
@@ -149,6 +163,132 @@ export async function getAdminInquiriesData() {
   return {
     inquiries,
     openCount: inquiries.filter((inquiry) => inquiry.status !== InquiryStatus.CLOSED).length,
+  };
+}
+
+export async function getAdminCrmData() {
+  if (isMockMode() || !prisma) {
+    return {
+      openInquiries: 0,
+      dueFollowUps: 0,
+      recentUsers: [],
+      recentInquiries: [],
+      sourceBreakdown: [],
+    };
+  }
+
+  const now = new Date();
+  const [recentUsers, recentInquiries] = await Promise.all([
+    prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        acquisitionSource: true,
+        acquisitionMedium: true,
+        acquisitionCampaign: true,
+      },
+    }),
+    prisma.inquiry.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 30,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        subject: true,
+        message: true,
+        category: true,
+        status: true,
+        source: true,
+        medium: true,
+        campaign: true,
+        assignedTo: true,
+        internalNotes: true,
+        followUpAt: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+
+  return {
+    openInquiries: recentInquiries.filter((item) => item.status !== InquiryStatus.CLOSED).length,
+    dueFollowUps: recentInquiries.filter((item) => item.followUpAt && item.followUpAt <= now && item.status !== InquiryStatus.CLOSED).length,
+    recentUsers,
+    recentInquiries,
+    sourceBreakdown: groupSources([
+      ...recentUsers.map((user) => ({ source: user.acquisitionSource })),
+      ...recentInquiries.map((inquiry) => ({ source: inquiry.source })),
+    ]),
+  };
+}
+
+export async function getAdminAnalyticsData() {
+  if (isMockMode() || !prisma) {
+    return {
+      totalUsers: 0,
+      totalInquiries: 0,
+      totalSubscribers: 0,
+      totalBookings: 0,
+      paidBookings: 0,
+      sourceBreakdown: [],
+      subscriberSources: [],
+      monthlyFunnel: [],
+    };
+  }
+
+  const [users, inquiries, subscribers, bookings] = await Promise.all([
+    prisma.user.findMany({
+      select: { id: true, createdAt: true, acquisitionSource: true },
+      orderBy: { createdAt: "desc" },
+      take: 250,
+    }),
+    prisma.inquiry.findMany({
+      select: { id: true, createdAt: true, source: true, status: true },
+      orderBy: { createdAt: "desc" },
+      take: 250,
+    }),
+    prisma.newsletterSubscriber.findMany({
+      select: { id: true, createdAt: true, source: true },
+      orderBy: { createdAt: "desc" },
+      take: 250,
+    }),
+    prisma.booking.findMany({
+      select: { id: true, createdAt: true, paymentStatus: true },
+      orderBy: { createdAt: "desc" },
+      take: 250,
+    }),
+  ]);
+
+  const monthlyLabels = Array.from({ length: 6 }).map((_, index) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - (5 - index));
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  });
+
+  const monthlyFunnel = monthlyLabels.map((label) => ({
+    label,
+    inquiries: inquiries.filter((item) => item.createdAt.toISOString().slice(0, 7) === label).length,
+    signUps: users.filter((item) => item.createdAt.toISOString().slice(0, 7) === label).length,
+    bookings: bookings.filter((item) => item.createdAt.toISOString().slice(0, 7) === label).length,
+  }));
+
+  return {
+    totalUsers: users.length,
+    totalInquiries: inquiries.length,
+    totalSubscribers: subscribers.length,
+    totalBookings: bookings.length,
+    paidBookings: bookings.filter((item) => item.paymentStatus === PaymentStatus.SUCCEEDED).length,
+    sourceBreakdown: groupSources([
+      ...users.map((user) => ({ source: user.acquisitionSource })),
+      ...inquiries.map((inquiry) => ({ source: inquiry.source })),
+    ]),
+    subscriberSources: groupSources(subscribers),
+    monthlyFunnel,
   };
 }
 

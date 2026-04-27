@@ -940,6 +940,8 @@ export async function updateManagedInquiry(
   input: {
     status: InquiryStatus;
     assignedTo?: string;
+    internalNotes?: string;
+    followUpAt?: string | null;
   },
 ) {
   if (!prisma || isMockMode()) throw new Error("Inquiry management requires the database.");
@@ -949,6 +951,8 @@ export async function updateManagedInquiry(
     data: {
       status: input.status,
       assignedTo: input.assignedTo?.trim() || null,
+      internalNotes: input.internalNotes?.trim() || null,
+      followUpAt: input.followUpAt ? new Date(input.followUpAt) : null,
       repliedAt: input.status === InquiryStatus.RESPONDED || input.status === InquiryStatus.CLOSED ? new Date() : null,
     },
   });

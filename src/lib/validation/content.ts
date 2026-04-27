@@ -92,6 +92,8 @@ export const workshopAdminSchema = z.object({
 export const inquiryAdminUpdateSchema = z.object({
   status: z.nativeEnum(InquiryStatus),
   assignedTo: z.string().max(120).optional().or(z.literal("")),
+  internalNotes: z.string().max(4000).optional().or(z.literal("")),
+  followUpAt: z.string().datetime().optional().or(z.literal("")).nullable(),
 });
 
 export const reviewAdminUpdateSchema = z.object({

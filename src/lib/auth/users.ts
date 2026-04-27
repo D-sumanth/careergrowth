@@ -6,6 +6,7 @@ import { AuthFlowError } from "@/lib/auth/errors";
 import { createPlainToken, hashToken } from "@/lib/auth/tokens";
 import { sendTransactionalEmail } from "@/lib/email";
 import { writeAuditLog } from "@/lib/auth/audit";
+import type { AttributionSnapshot } from "@/lib/marketing/attribution";
 
 const mockUsers = [
   {
@@ -70,7 +71,10 @@ export async function authenticateUser(email: string, password: string): Promise
   };
 }
 
-export async function registerUser(input: { name: string; email: string; password: string }) {
+export async function registerUser(
+  input: { name: string; email: string; password: string },
+  attribution?: AttributionSnapshot | null,
+) {
   const normalizedEmail = input.email.trim().toLowerCase();
 
   if (isMockMode() || !prisma) {
@@ -95,6 +99,10 @@ export async function registerUser(input: { name: string; email: string; passwor
       email: normalizedEmail,
       passwordHash,
       role: UserRole.STUDENT,
+      acquisitionSource: attribution?.source ?? null,
+      acquisitionMedium: attribution?.medium ?? null,
+      acquisitionCampaign: attribution?.campaign ?? null,
+      acquisitionReferrer: attribution?.referrer ?? null,
     },
   });
 
@@ -104,7 +112,12 @@ export async function registerUser(input: { name: string; email: string; passwor
     action: "auth.account_created",
     entityType: "User",
     entityId: user.id,
-    metadata: { email: user.email },
+    metadata: {
+      email: user.email,
+      source: attribution?.source ?? null,
+      medium: attribution?.medium ?? null,
+      campaign: attribution?.campaign ?? null,
+    },
   });
 
   return { userId: user.id, email: user.email, name: user.name, role: user.role, mock: false };

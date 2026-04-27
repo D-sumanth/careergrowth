@@ -89,6 +89,10 @@ model User {
   emailVerifiedAt       DateTime?
   role                  UserRole               @default(STUDENT)
   image                 String?
+  acquisitionSource     String?
+  acquisitionMedium     String?
+  acquisitionCampaign   String?
+  acquisitionReferrer   String?
   isActive              Boolean                @default(true)
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
@@ -255,12 +259,18 @@ model Inquiry {
   userId       String?
   name         String
   email        String
+  source       String?
+  medium       String?
+  campaign     String?
+  referrer     String?
   category     InquiryCategory
   subject      String
   message      String
   mobileNumber String?
   status       InquiryStatus   @default(NEW)
   assignedTo   String?
+  internalNotes String?
+  followUpAt   DateTime?
   repliedAt    DateTime?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
@@ -381,6 +391,9 @@ model NewsletterSubscriber {
   consentedAt DateTime
   status      String   @default("subscribed")
   source      String   @default("website")
+  medium      String?
+  campaign    String?
+  referrer    String?
   createdAt   DateTime @default(now())
 }
 
