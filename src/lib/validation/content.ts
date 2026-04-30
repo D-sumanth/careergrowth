@@ -1,4 +1,4 @@
-import { BookingKind, InquiryStatus, ReviewStatus, WorkshopStatus } from "@prisma/client";
+import { BookingKind, InquiryStatus, LeadStage, ReviewStatus, WorkshopStatus } from "@prisma/client";
 import { z } from "zod";
 
 const relativeOrAbsoluteUrl = z
@@ -91,6 +91,8 @@ export const workshopAdminSchema = z.object({
 
 export const inquiryAdminUpdateSchema = z.object({
   status: z.nativeEnum(InquiryStatus),
+  leadStage: z.nativeEnum(LeadStage),
+  tags: z.array(z.string().trim().min(1).max(32)).max(12).optional().default([]),
   assignedTo: z.string().max(120).optional().or(z.literal("")),
   internalNotes: z.string().max(4000).optional().or(z.literal("")),
   followUpAt: z.string().datetime().optional().or(z.literal("")).nullable(),

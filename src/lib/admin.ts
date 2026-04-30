@@ -20,6 +20,18 @@ function groupSources(items: Array<{ source: string | null }>) {
     .slice(0, 8);
 }
 
+function groupLeadStages(items: Array<{ leadStage: string }>) {
+  const map = new Map<string, number>();
+
+  for (const item of items) {
+    map.set(item.leadStage, (map.get(item.leadStage) ?? 0) + 1);
+  }
+
+  return [...map.entries()]
+    .map(([stage, count]) => ({ stage, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
 function buildSourceLabel(source?: string | null) {
   return source?.trim() || "unknown";
 }
@@ -168,7 +180,7 @@ export async function getAdminContentData() {
 
 export async function getAdminInquiriesData() {
   if (isMockMode() || !prisma) {
-    return { inquiries: [], openCount: 0, dueFollowUps: 0, sourceBreakdown: [] };
+    return { inquiries: [], openCount: 0, dueFollowUps: 0, sourceBreakdown: [], stageBreakdown: [] };
   }
 
   const inquiries = await prisma.inquiry.findMany({
@@ -183,6 +195,7 @@ export async function getAdminInquiriesData() {
     openCount: inquiries.filter((inquiry) => inquiry.status !== InquiryStatus.CLOSED).length,
     dueFollowUps: inquiries.filter((inquiry) => inquiry.followUpAt && inquiry.followUpAt <= now && inquiry.status !== InquiryStatus.CLOSED).length,
     sourceBreakdown: groupSources(inquiries.map((inquiry) => ({ source: inquiry.source }))),
+    stageBreakdown: groupLeadStages(inquiries),
   };
 }
 
@@ -194,6 +207,7 @@ export async function getAdminCrmData() {
       recentUsers: [],
       recentInquiries: [],
       sourceBreakdown: [],
+      stageBreakdown: [],
     };
   }
 
@@ -224,6 +238,8 @@ export async function getAdminCrmData() {
         message: true,
         category: true,
         status: true,
+        leadStage: true,
+        tags: true,
         source: true,
         medium: true,
         campaign: true,
@@ -244,6 +260,7 @@ export async function getAdminCrmData() {
       ...recentUsers.map((user) => ({ source: user.acquisitionSource })),
       ...recentInquiries.map((inquiry) => ({ source: inquiry.source })),
     ]),
+    stageBreakdown: groupLeadStages(recentInquiries),
   };
 }
 

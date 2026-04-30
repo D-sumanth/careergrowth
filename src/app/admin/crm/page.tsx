@@ -24,7 +24,7 @@ export default async function AdminCrmPage() {
           { label: "Open inquiries", value: String(data.openInquiries) },
           { label: "Due follow-ups", value: String(data.dueFollowUps) },
           { label: "Recent leads", value: String(data.recentInquiries.length) },
-          { label: "Recent sign-ups", value: String(data.recentUsers.length) },
+          { label: "Active stages", value: String(data.stageBreakdown.length) },
         ]}
       />
 
@@ -37,8 +37,12 @@ export default async function AdminCrmPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium text-slate-950">{item.subject}</p>
                     <Badge>{item.status}</Badge>
+                    <Badge className="bg-amber-100 text-amber-800">{item.leadStage.replaceAll("_", " ")}</Badge>
                     <Badge className="bg-white text-slate-700">{item.source ?? "unknown source"}</Badge>
                     {item.category ? <Badge className="bg-white text-slate-700">{item.category.replaceAll("_", " ")}</Badge> : null}
+                    {item.tags.map((tag) => (
+                      <Badge key={tag} className="bg-white text-slate-700">{tag}</Badge>
+                    ))}
                   </div>
                   <p className="mt-1 text-sm text-slate-600">
                     {item.name} - {item.email}
@@ -96,6 +100,26 @@ export default async function AdminCrmPage() {
               <DashboardEmptyState
                 title="No source data yet"
                 description="Once sign-ups and inquiries come through tracked links or referrals, source insights will show here."
+              />
+            )}
+          </AdminSectionCard>
+
+          <AdminSectionCard title="Lead pipeline" description="Current stage mix for the most recent inquiry leads.">
+            {data.stageBreakdown.length ? (
+              <div className="space-y-3">
+                {data.stageBreakdown.map((item) => (
+                  <div key={item.stage} className="rounded-lg bg-slate-50 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-medium capitalize text-slate-950">{item.stage.replaceAll("_", " ").toLowerCase()}</p>
+                      <span className="text-sm font-semibold text-slate-700">{item.count}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <DashboardEmptyState
+                title="No pipeline data yet"
+                description="As inquiry leads are staged, their pipeline mix will appear here."
               />
             )}
           </AdminSectionCard>

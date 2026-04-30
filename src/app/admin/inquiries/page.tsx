@@ -17,7 +17,7 @@ export default async function AdminInquiriesPage() {
           { label: "Visible inquiries", value: String(data.inquiries.length) },
           { label: "Open items", value: String(data.openCount) },
           { label: "Due follow-ups", value: String(data.dueFollowUps) },
-          { label: "Sources tracked", value: String(data.sourceBreakdown.length) },
+          { label: "Lead stages", value: String(data.stageBreakdown.length) },
         ]}
       />
       <AdminSectionCard title="Inquiry queue" description="Recent contact submissions across all categories.">

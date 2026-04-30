@@ -1,6 +1,7 @@
 import {
   BookingKind,
   InquiryStatus,
+  LeadStage,
   Prisma,
   ReviewStatus,
   WorkshopStatus,
@@ -939,6 +940,8 @@ export async function updateManagedInquiry(
   id: string,
   input: {
     status: InquiryStatus;
+    leadStage: LeadStage;
+    tags?: string[];
     assignedTo?: string;
     internalNotes?: string;
     followUpAt?: string | null;
@@ -950,6 +953,8 @@ export async function updateManagedInquiry(
     where: { id },
     data: {
       status: input.status,
+      leadStage: input.leadStage,
+      tags: [...new Set((input.tags ?? []).map((tag) => tag.trim()).filter(Boolean))].slice(0, 12),
       assignedTo: input.assignedTo?.trim() || null,
       internalNotes: input.internalNotes?.trim() || null,
       followUpAt: input.followUpAt ? new Date(input.followUpAt) : null,

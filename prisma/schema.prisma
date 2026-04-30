@@ -51,6 +51,16 @@ enum InquiryStatus {
   CLOSED
 }
 
+enum LeadStage {
+  NEW_LEAD
+  QUALIFIED
+  CONSULTATION_BOOKED
+  PROPOSAL_SENT
+  CONVERTED
+  NURTURE
+  LOST
+}
+
 enum ReviewStatus {
   NEW
   IN_PROGRESS
@@ -268,6 +278,8 @@ model Inquiry {
   message      String
   mobileNumber String?
   status       InquiryStatus   @default(NEW)
+  leadStage    LeadStage        @default(NEW_LEAD)
+  tags         String[]         @default([])
   assignedTo   String?
   internalNotes String?
   followUpAt   DateTime?
