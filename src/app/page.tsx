@@ -56,7 +56,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <Card className="overflow-hidden border-slate-800 bg-slate-950 p-4 text-white shadow-xl shadow-amber-100/70 sm:p-5">
+            <Card className="overflow-hidden border-slate-800 bg-slate-950 p-4 text-white sm:p-5">
               <div className="rounded-lg bg-gradient-to-br from-amber-200 via-orange-100 to-white p-px">
                 <div className="rounded-lg bg-slate-950 p-5 sm:p-6">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200">Consultant spotlight</p>

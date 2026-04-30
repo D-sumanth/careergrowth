@@ -21,7 +21,7 @@ export default async function VerifyEmailPage({
     <>
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
-        <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-[0_32px_80px_-48px_rgba(15,23,42,0.35)]">
+        <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
           <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-slate-600">
             Email verification
           </div>

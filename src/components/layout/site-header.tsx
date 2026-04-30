@@ -22,7 +22,7 @@ export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashb
   const dashboardHref = session?.role === "ADMIN" ? "/admin" : "/dashboard";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-2.5 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="min-w-0 max-w-[13rem] pr-2 sm:max-w-[16rem]">
@@ -66,15 +66,15 @@ export async function SiteHeader({ mode = "public" }: { mode?: "public" | "dashb
             )}
           </div>
           <details className="group lg:hidden xl:hidden">
-            <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+            <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
               <Menu className="h-5 w-5" />
             </summary>
-            <div className="absolute inset-x-0 top-full border-t border-slate-200 bg-white/95 px-4 py-4 shadow-xl backdrop-blur sm:px-6">
+            <div className="absolute inset-x-0 top-full border-t border-slate-200 bg-white px-4 py-4 shadow-sm sm:px-6">
               <div className="mx-auto flex max-w-7xl flex-col gap-2">
                 {session ? (
                   <Link
                     href={dashboardHref}
-                    className="rounded-lg bg-slate-950 px-3 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-900"
+                    className="rounded-lg bg-slate-950 px-3 py-3 text-sm font-semibold text-white transition hover:bg-slate-900"
                   >
                     {session.role === "ADMIN" ? "Admin console" : "Dashboard"}
                   </Link>

@@ -228,7 +228,7 @@ export function AuthForm({
   const showPasswordGuidance = mode === "sign-up" || mode === "reset-password";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_32px_80px_-48px_rgba(15,23,42,0.35)]">
+    <form onSubmit={onSubmit} noValidate className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-amber-100 bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.18),_transparent_55%),linear-gradient(180deg,#fffdf7,#ffffff)] px-6 py-6 sm:px-8">
         <div className="inline-flex rounded-full border border-amber-200/80 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
           Secure account access
