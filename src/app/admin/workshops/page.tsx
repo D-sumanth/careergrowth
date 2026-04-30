@@ -25,7 +25,7 @@ export default async function AdminWorkshopsPage() {
         {data.workshops.length ? (
           <div className="space-y-4">
             {data.workshops.map((workshop) => (
-              <div key={workshop.id} className="rounded-2xl bg-slate-50 p-4">
+              <div key={workshop.id} className="rounded-lg bg-slate-50 p-4">
                 <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">

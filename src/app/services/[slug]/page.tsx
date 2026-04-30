@@ -25,7 +25,7 @@ export default async function ServiceDetailPage({
     <>
       <SiteHeader />
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <section className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm">
+        <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
           {service.imageUrl ? (
             <div className="aspect-[16/7]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -68,7 +68,7 @@ export default async function ServiceDetailPage({
             <h2 className="font-serif text-3xl text-slate-950">What&apos;s included</h2>
             <ul className="mt-5 space-y-3 text-sm leading-7 text-slate-600">
               {service.includedItems.map((item) => (
-                <li key={item} className="rounded-2xl bg-slate-50 px-4 py-3">
+                <li key={item} className="rounded-lg bg-slate-50 px-4 py-3">
                   {item}
                 </li>
               ))}
@@ -82,7 +82,7 @@ export default async function ServiceDetailPage({
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink href="/contact">Ask a question</ButtonLink>
-              <Link href={`/services/${service.slug}/book`} className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
+              <Link href={`/services/${service.slug}/book`} className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
                 Continue to booking
               </Link>
             </div>
@@ -97,7 +97,7 @@ export default async function ServiceDetailPage({
               <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
                 A quick walkthrough to help students understand what this support looks like before they book.
               </p>
-              <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200">
+              <div className="mt-6 overflow-hidden rounded-lg border border-slate-200">
                 <div className="aspect-video">
                   <iframe
                     src={embedUrl}

@@ -94,7 +94,7 @@ export function PostsManager({ items }: { items: PostRecord[] }) {
               key={item.id}
               type="button"
               onClick={() => select(item)}
-              className={`w-full rounded-2xl border p-4 text-left transition ${
+              className={`w-full rounded-lg border p-4 text-left transition ${
                 selectedId === item.id ? "border-slate-950 bg-slate-950 text-white" : "border-slate-200 bg-slate-50"
               }`}
             >
@@ -106,28 +106,28 @@ export function PostsManager({ items }: { items: PostRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={submit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={submit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="font-semibold text-slate-950">{selected ? "Edit post" : "Create post"}</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Title</span>
-            <input value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Slug</span>
-            <input value={form.slug} onChange={(e) => setForm((c) => ({ ...c, slug: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.slug} onChange={(e) => setForm((c) => ({ ...c, slug: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Topic</span>
-            <input value={form.topic} onChange={(e) => setForm((c) => ({ ...c, topic: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input value={form.topic} onChange={(e) => setForm((c) => ({ ...c, topic: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Excerpt</span>
-            <input value={form.excerpt} onChange={(e) => setForm((c) => ({ ...c, excerpt: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input value={form.excerpt} onChange={(e) => setForm((c) => ({ ...c, excerpt: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
             <span>Content</span>
-            <textarea value={form.content} onChange={(e) => setForm((c) => ({ ...c, content: e.target.value }))} className="min-h-64 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <textarea value={form.content} onChange={(e) => setForm((c) => ({ ...c, content: e.target.value }))} className="min-h-64 w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
         </div>
         <label className="flex items-center gap-2 text-sm text-slate-700">

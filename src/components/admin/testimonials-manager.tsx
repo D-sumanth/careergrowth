@@ -96,7 +96,7 @@ export function TestimonialsManager({ items }: { items: TestimonialRecord[] }) {
               key={item.id}
               type="button"
               onClick={() => select(item)}
-              className={`w-full rounded-2xl border p-4 text-left transition ${
+              className={`w-full rounded-lg border p-4 text-left transition ${
                 selectedId === item.id ? "border-slate-950 bg-slate-950 text-white" : "border-slate-200 bg-slate-50"
               }`}
             >
@@ -109,19 +109,19 @@ export function TestimonialsManager({ items }: { items: TestimonialRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={submit} className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <form onSubmit={submit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="font-semibold text-slate-950">{selected ? "Edit testimonial" : "Create testimonial"}</h2>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Name</span>
-          <input value={form.name} onChange={(e) => setForm((c) => ({ ...c, name: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+          <input value={form.name} onChange={(e) => setForm((c) => ({ ...c, name: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
         </label>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Role (optional)</span>
-          <input value={form.role} onChange={(e) => setForm((c) => ({ ...c, role: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+          <input value={form.role} onChange={(e) => setForm((c) => ({ ...c, role: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
         </label>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Content</span>
-          <textarea value={form.content} onChange={(e) => setForm((c) => ({ ...c, content: e.target.value }))} className="min-h-32 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+          <textarea value={form.content} onChange={(e) => setForm((c) => ({ ...c, content: e.target.value }))} className="min-h-32 w-full rounded-lg border border-slate-300 px-4 py-3" required />
         </label>
         <MediaUploadField
           label="Profile image"
@@ -131,7 +131,7 @@ export function TestimonialsManager({ items }: { items: TestimonialRecord[] }) {
         />
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Rating (optional)</span>
-          <input type="number" min="1" max="5" value={form.rating} onChange={(e) => setForm((c) => ({ ...c, rating: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+          <input type="number" min="1" max="5" value={form.rating} onChange={(e) => setForm((c) => ({ ...c, rating: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
         </label>
         <div className="flex flex-wrap gap-3">
           <Button type="submit" disabled={pending}>{pending ? "Saving..." : selected ? "Update testimonial" : "Create testimonial"}</Button>

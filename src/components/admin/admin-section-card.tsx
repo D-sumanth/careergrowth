@@ -10,10 +10,10 @@ export function AdminSectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="p-5 sm:p-6">
-      <div className="mb-4">
+    <Card className="p-4 sm:p-5">
+      <div className="mb-4 border-b border-slate-100 pb-3">
         <h2 className="text-base font-semibold text-slate-950">{title}</h2>
-        {description ? <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{description}</p> : null}
+        {description ? <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">{description}</p> : null}
       </div>
       {children}
     </Card>

@@ -25,7 +25,7 @@ export default async function DashboardBookingsPage() {
             <div className="mt-4 space-y-4">
               {overview.upcomingBookings.length ? (
                 overview.upcomingBookings.map((booking) => (
-                  <div key={booking.id} className="rounded-2xl bg-slate-50 p-4">
+                  <div key={booking.id} className="rounded-lg bg-slate-50 p-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="font-medium text-slate-950">{booking.service?.title ?? "Booked session"}</p>
@@ -52,7 +52,7 @@ export default async function DashboardBookingsPage() {
             <div className="mt-4 space-y-4">
               {overview.pastBookings.length ? (
                 overview.pastBookings.map((booking) => (
-                  <div key={booking.id} className="rounded-2xl bg-slate-50 p-4">
+                  <div key={booking.id} className="rounded-lg bg-slate-50 p-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="font-medium text-slate-950">{booking.service?.title ?? "Completed session"}</p>

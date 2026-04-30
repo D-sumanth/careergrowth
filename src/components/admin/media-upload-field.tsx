@@ -53,7 +53,7 @@ export function MediaUploadField({ label, value, onChange, helperText }: MediaUp
         <input
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm"
+          className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm"
           placeholder="/api/media/... or https://..."
         />
       </div>
@@ -78,7 +78,7 @@ export function MediaUploadField({ label, value, onChange, helperText }: MediaUp
       {helperText ? <p className="text-xs leading-6 text-slate-500">{helperText}</p> : null}
 
       {value ? (
-        <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
+        <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
           <div className="aspect-video">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={value} alt={`${label} preview`} className="h-full w-full object-cover" />

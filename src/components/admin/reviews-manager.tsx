@@ -107,7 +107,7 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
         const submittedFiles = item.documents.filter((document) => document.visibility !== "SHARED");
 
         return (
-          <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div key={item.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <div className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
               <div className="space-y-4">
                 <div>
@@ -116,7 +116,7 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
                   <p className="mt-2 text-sm text-slate-600">{item.currentChallenge}</p>
                 </div>
 
-                <div className="rounded-2xl bg-white p-4">
+                <div className="rounded-lg bg-white p-4">
                   <p className="text-sm font-semibold text-slate-950">Submitted files</p>
                   <div className="mt-3 space-y-2">
                     {submittedFiles.length ? (
@@ -131,7 +131,7 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
                   </div>
                 </div>
 
-                <div className="rounded-2xl bg-white p-4">
+                <div className="rounded-lg bg-white p-4">
                   <p className="text-sm font-semibold text-slate-950">Delivered files</p>
                   <div className="mt-3 space-y-2">
                     {deliveredFiles.length ? (
@@ -151,7 +151,7 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
                       }}
                       type="file"
                       accept=".pdf,.doc,.docx,.txt"
-                      className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm"
                     />
                     <Button type="button" disabled={uploadingId === item.id} onClick={() => uploadDelivery(item.id)}>
                       {uploadingId === item.id ? "Uploading..." : "Upload delivery"}
@@ -163,7 +163,7 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
               <div className="grid gap-3 md:grid-cols-2">
                 <label className="space-y-2 text-sm text-slate-700">
                   <span>Status</span>
-                  <select value={draft.status} onChange={(e) => updateDraft(item.id, "status", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+                  <select value={draft.status} onChange={(e) => updateDraft(item.id, "status", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3">
                     <option value="NEW">New</option>
                     <option value="IN_PROGRESS">In progress</option>
                     <option value="AWAITING_CLIENT">Awaiting client</option>
@@ -173,7 +173,7 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
                 </label>
                 <label className="space-y-2 text-sm text-slate-700">
                   <span>Assigned to</span>
-                  <select value={draft.assignedToId} onChange={(e) => updateDraft(item.id, "assignedToId", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+                  <select value={draft.assignedToId} onChange={(e) => updateDraft(item.id, "assignedToId", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3">
                     <option value="">Unassigned</option>
                     {assignees.map((assignee) => (
                       <option key={assignee.id} value={assignee.id}>
@@ -184,15 +184,15 @@ export function ReviewsManager({ items, assignees }: { items: ReviewRecord[]; as
                 </label>
                 <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
                   <span>Internal notes</span>
-                  <textarea value={draft.notes} onChange={(e) => updateDraft(item.id, "notes", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" />
+                  <textarea value={draft.notes} onChange={(e) => updateDraft(item.id, "notes", e.target.value)} className="min-h-24 w-full rounded-lg border border-slate-300 px-4 py-3" />
                 </label>
                 <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
                   <span>Delivery summary</span>
-                  <textarea value={draft.deliverySummary} onChange={(e) => updateDraft(item.id, "deliverySummary", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" />
+                  <textarea value={draft.deliverySummary} onChange={(e) => updateDraft(item.id, "deliverySummary", e.target.value)} className="min-h-24 w-full rounded-lg border border-slate-300 px-4 py-3" />
                 </label>
                 <label className="space-y-2 text-sm text-slate-700">
                   <span>Turnaround hours</span>
-                  <input type="number" min="0" value={draft.turnaroundHours} onChange={(e) => updateDraft(item.id, "turnaroundHours", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+                  <input type="number" min="0" value={draft.turnaroundHours} onChange={(e) => updateDraft(item.id, "turnaroundHours", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
                 </label>
                 <div className="flex items-end">
                   <Button type="button" disabled={pendingId === item.id} onClick={() => save(item)}>

@@ -15,22 +15,22 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-4">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {stats.map(([label, value]) => (
-          <Card key={label} className="p-6">
-            <p className="text-sm text-slate-500">{label}</p>
-            <p className="mt-2 font-serif text-4xl text-slate-950">{value}</p>
+          <Card key={label} className="p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{label}</p>
+            <p className="mt-2 font-serif text-3xl font-semibold text-slate-950">{value}</p>
           </Card>
         ))}
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         {overview.upcomingBookings.length ? (
-          <Card className="p-6">
+          <Card className="p-5">
             <h2 className="font-semibold text-slate-950">Upcoming bookings</h2>
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-3">
               {overview.upcomingBookings.map((booking) => (
-                <div key={booking.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={booking.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{booking.service?.title ?? "Booked session"}</p>
                   <p className="mt-1 text-sm text-slate-600">{formatDateTime(booking.startsAt, booking.timezone)}</p>
                 </div>
@@ -45,11 +45,11 @@ export default async function DashboardPage() {
         )}
 
         {overview.documents.length ? (
-          <Card className="p-6">
+          <Card className="p-5">
             <h2 className="font-semibold text-slate-950">Recent documents</h2>
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-3">
               {overview.documents.map((document) => (
-                <div key={document.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={document.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{document.fileName}</p>
                   <p className="mt-1 text-sm text-slate-600">{document.mimeType}</p>
                 </div>
@@ -63,13 +63,13 @@ export default async function DashboardPage() {
           />
         )}
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         {overview.notifications.length ? (
-          <Card className="p-6">
+          <Card className="p-5">
             <h2 className="font-semibold text-slate-950">Recent activity</h2>
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-3">
               {overview.notifications.map((notification) => (
-                <div key={notification.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={notification.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{notification.title}</p>
                   <p className="mt-1 text-sm text-slate-600">{notification.body}</p>
                   <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-400">{formatDateTime(notification.createdAt)}</p>
@@ -85,11 +85,11 @@ export default async function DashboardPage() {
         )}
 
         {overview.reviewRequests.length ? (
-          <Card className="p-6">
+          <Card className="p-5">
             <h2 className="font-semibold text-slate-950">Resume review progress</h2>
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-3">
               {overview.reviewRequests.map((review) => (
-                <div key={review.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={review.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{review.jobTarget}</p>
                   <p className="mt-1 text-sm text-slate-600">{review.currentChallenge}</p>
                   <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-400">{review.status.replaceAll("_", " ")}</p>

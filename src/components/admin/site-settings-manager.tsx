@@ -59,7 +59,7 @@ export function SiteSettingsManager({ initialValues }: { initialValues: SiteSett
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form onSubmit={submit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="font-semibold text-slate-950">Brand, homepage, about, and contact copy</h2>
       <div className="grid gap-4 md:grid-cols-2">
         {[
@@ -88,15 +88,15 @@ export function SiteSettingsManager({ initialValues }: { initialValues: SiteSett
           <label key={key} className={`space-y-2 text-sm text-slate-700 ${["heroTitle", "heroDescription", "mission", "credibility", "contactNote", "aboutTitle", "aboutIntro", "aboutBody", "workshopsTitle", "workshopsDescription", "footerDescription"].includes(key) ? "md:col-span-2" : ""}`}>
             <span>{label}</span>
             {["heroTitle", "heroDescription", "mission", "credibility", "contactNote", "aboutIntro", "aboutBody", "workshopsTitle", "workshopsDescription", "footerDescription"].includes(key) ? (
-              <textarea value={form[key as keyof SiteSettingsForm]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+              <textarea value={form[key as keyof SiteSettingsForm]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="min-h-24 w-full rounded-lg border border-slate-300 px-4 py-3" required />
             ) : (
-              <input value={form[key as keyof SiteSettingsForm]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required={!["whatsapp", "instagram"].includes(key)} />
+              <input value={form[key as keyof SiteSettingsForm]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required={!["whatsapp", "instagram"].includes(key)} />
             )}
           </label>
         ))}
         <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
           <span>Mission and values (one per line)</span>
-          <textarea value={form.valuesText} onChange={(e) => setForm((current) => ({ ...current, valuesText: e.target.value }))} className="min-h-32 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+          <textarea value={form.valuesText} onChange={(e) => setForm((current) => ({ ...current, valuesText: e.target.value }))} className="min-h-32 w-full rounded-lg border border-slate-300 px-4 py-3" required />
         </label>
       </div>
 

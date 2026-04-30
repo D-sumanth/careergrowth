@@ -17,11 +17,11 @@ export default async function CheckoutCancelPage({
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href={service ? `/services/${service}/book` : "/services"}
-            className="inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="inline-flex items-center rounded-lg bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             Return to booking
           </Link>
-          <Link href="/dashboard/bookings" className="inline-flex items-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
+          <Link href="/dashboard/bookings" className="inline-flex items-center rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
             View dashboard
           </Link>
         </div>

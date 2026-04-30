@@ -75,19 +75,19 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-2 xl:grid-cols-4">
         <label className="space-y-2 text-sm text-slate-700">
           <span>Search</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-2xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-lg border border-slate-300 px-4 py-3"
             placeholder="Name, email, subject"
           />
         </label>
         <label className="space-y-2 text-sm text-slate-700">
           <span>Status</span>
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3">
             <option value="ALL">All statuses</option>
             <option value="NEW">New</option>
             <option value="IN_PROGRESS">In progress</option>
@@ -97,7 +97,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
         </label>
         <label className="space-y-2 text-sm text-slate-700">
           <span>Source</span>
-          <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+          <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3">
             <option value="ALL">All sources</option>
             {sources.map((source) => (
               <option key={source} value={source}>
@@ -109,7 +109,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
         </label>
         <label className="space-y-2 text-sm text-slate-700">
           <span>Category</span>
-          <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+          <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3">
             <option value="ALL">All categories</option>
             {categories.map((category) => (
               <option key={category} value={category}>
@@ -121,7 +121,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
       </div>
 
       {filteredItems.map((item) => (
-        <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div key={item.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
               <p className="font-medium text-slate-950">{item.subject}</p>
@@ -141,7 +141,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
                 <select
                   value={status[item.id] ?? item.status}
                   onChange={(e) => setStatus((current) => ({ ...current, [item.id]: e.target.value }))}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-3"
                 >
                   <option value="NEW">New</option>
                   <option value="IN_PROGRESS">In progress</option>
@@ -154,7 +154,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
                 <input
                   value={owner[item.id] ?? item.assignedTo ?? ""}
                   onChange={(e) => setOwner((current) => ({ ...current, [item.id]: e.target.value }))}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-3"
                   placeholder="Aditi"
                 />
               </label>
@@ -165,7 +165,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
                   type="datetime-local"
                   value={followUpAt[item.id] ?? toDateTimeLocal(item.followUpAt)}
                   onChange={(e) => setFollowUpAt((current) => ({ ...current, [item.id]: e.target.value }))}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-3"
                 />
               </label>
               <label className="space-y-2 text-sm text-slate-700">
@@ -173,7 +173,7 @@ export function InquiriesManager({ items }: { items: InquiryRecord[] }) {
                 <textarea
                   value={notes[item.id] ?? item.internalNotes ?? ""}
                   onChange={(e) => setNotes((current) => ({ ...current, [item.id]: e.target.value }))}
-                  className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3"
+                  className="min-h-24 w-full rounded-lg border border-slate-300 px-4 py-3"
                   placeholder="Call outcome, follow-up plan, or lead notes"
                 />
               </label>

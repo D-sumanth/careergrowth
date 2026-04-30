@@ -23,7 +23,7 @@ export default async function AdminBookingsPage() {
         {data.bookings.length ? (
           <div className="space-y-4">
             {data.bookings.map((booking) => (
-              <div key={booking.id} className="rounded-2xl bg-slate-50 p-4">
+              <div key={booking.id} className="rounded-lg bg-slate-50 p-4">
                 <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">

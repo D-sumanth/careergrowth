@@ -76,48 +76,48 @@ export function SettingsForm({ account }: SettingsFormProps) {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleProfileSubmit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={handleProfileSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="font-semibold text-slate-950">Profile details</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Full name</span>
-            <input name="name" defaultValue={account.name} required className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="name" defaultValue={account.name} required className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Email</span>
-            <input value={account.email} readOnly className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500" />
+            <input value={account.email} readOnly className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Mobile number</span>
-            <input name="mobileNumber" defaultValue={account.profile?.mobileNumber ?? ""} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="mobileNumber" defaultValue={account.profile?.mobileNumber ?? ""} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>University</span>
-            <input name="university" defaultValue={account.profile?.university ?? ""} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="university" defaultValue={account.profile?.university ?? ""} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Degree</span>
-            <input name="degree" defaultValue={account.profile?.degree ?? ""} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="degree" defaultValue={account.profile?.degree ?? ""} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Visa status</span>
-            <input name="visaStatus" defaultValue={account.profile?.visaStatus ?? ""} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="visaStatus" defaultValue={account.profile?.visaStatus ?? ""} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Career target</span>
-            <input name="careerTarget" defaultValue={account.profile?.careerTarget ?? ""} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="careerTarget" defaultValue={account.profile?.careerTarget ?? ""} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>LinkedIn URL</span>
-            <input name="linkedInUrl" defaultValue={account.profile?.linkedInUrl ?? ""} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="linkedInUrl" defaultValue={account.profile?.linkedInUrl ?? ""} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
             <span>Timezone</span>
-            <input name="timezone" defaultValue={account.profile?.timezone ?? "Europe/London"} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input name="timezone" defaultValue={account.profile?.timezone ?? "Europe/London"} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
             <span>Notes</span>
-            <textarea name="notes" defaultValue={account.profile?.notes ?? ""} className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <textarea name="notes" defaultValue={account.profile?.notes ?? ""} className="min-h-28 w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
         </div>
         <div className="flex items-center gap-4">
@@ -129,20 +129,20 @@ export function SettingsForm({ account }: SettingsFormProps) {
         {profileError ? <p className="text-sm text-rose-600">{profileError}</p> : null}
       </form>
 
-      <form onSubmit={handlePasswordSubmit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={handlePasswordSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="font-semibold text-slate-950">Change password</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Current password</span>
-            <input type="password" name="currentPassword" required className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input type="password" name="currentPassword" required className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>New password</span>
-            <input type="password" name="newPassword" required className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input type="password" name="newPassword" required className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Confirm new password</span>
-            <input type="password" name="confirmPassword" required className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input type="password" name="confirmPassword" required className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
         </div>
         <div className="flex items-center gap-4">

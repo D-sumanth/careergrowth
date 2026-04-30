@@ -169,7 +169,7 @@ export function AvailabilityManager({
             <select
               value={consultantId}
               onChange={(event) => setConsultantId(event.target.value)}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950"
             >
               {consultants.map((consultant) => (
                 <option key={consultant.id} value={consultant.id}>
@@ -184,12 +184,12 @@ export function AvailabilityManager({
       </Card>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <form onSubmit={createRule} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form onSubmit={createRule} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="font-semibold text-slate-950">Add recurring weekly hours</h3>
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="space-y-2 text-sm text-slate-700">
               <span>Day</span>
-              <select name="dayOfWeek" defaultValue="1" className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950">
+              <select name="dayOfWeek" defaultValue="1" className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950">
                 {dayOptions.map(([value, label]) => (
                   <option key={value} value={value}>
                     {label}
@@ -199,11 +199,11 @@ export function AvailabilityManager({
             </label>
             <label className="space-y-2 text-sm text-slate-700">
               <span>Start</span>
-              <input type="time" name="startTime" defaultValue="10:00" required className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
+              <input type="time" name="startTime" defaultValue="10:00" required className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
             </label>
             <label className="space-y-2 text-sm text-slate-700">
               <span>End</span>
-              <input type="time" name="endTime" defaultValue="17:00" required className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
+              <input type="time" name="endTime" defaultValue="17:00" required className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
             </label>
           </div>
           <Button type="submit" disabled={pendingRule || !consultantId}>
@@ -211,7 +211,7 @@ export function AvailabilityManager({
           </Button>
         </form>
 
-        <form onSubmit={createOverride} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form onSubmit={createOverride} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="font-semibold text-slate-950">Add date override</h3>
           <div className="flex flex-wrap gap-3">
             <button
@@ -232,20 +232,20 @@ export function AvailabilityManager({
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="space-y-2 text-sm text-slate-700">
               <span>Date</span>
-              <input type="date" name="date" min={new Date().toISOString().slice(0, 10)} defaultValue={getDefaultDate()} required className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
+              <input type="date" name="date" min={new Date().toISOString().slice(0, 10)} defaultValue={getDefaultDate()} required className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
             </label>
             <label className="space-y-2 text-sm text-slate-700">
               <span>Start</span>
-              <input type="time" name="startTime" disabled={overrideMode === "blocked"} defaultValue="10:00" className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950 disabled:bg-slate-100" />
+              <input type="time" name="startTime" disabled={overrideMode === "blocked"} defaultValue="10:00" className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950 disabled:bg-slate-100" />
             </label>
             <label className="space-y-2 text-sm text-slate-700">
               <span>End</span>
-              <input type="time" name="endTime" disabled={overrideMode === "blocked"} defaultValue="12:00" className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950 disabled:bg-slate-100" />
+              <input type="time" name="endTime" disabled={overrideMode === "blocked"} defaultValue="12:00" className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950 disabled:bg-slate-100" />
             </label>
           </div>
           <label className="block space-y-2 text-sm text-slate-700">
             <span>Reason</span>
-            <input name="reason" placeholder={overrideMode === "blocked" ? "Holiday, travel, unavailable day" : "Special workshop week, extra coaching hours"} className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
+            <input name="reason" placeholder={overrideMode === "blocked" ? "Holiday, travel, unavailable day" : "Special workshop week, extra coaching hours"} className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950" />
           </label>
           <Button type="submit" disabled={pendingOverride || !consultantId}>
             {pendingOverride ? "Saving..." : "Save override"}
@@ -259,7 +259,7 @@ export function AvailabilityManager({
           <div className="mt-4 space-y-3">
             {rules.length ? (
               rules.map((rule) => (
-                <div key={rule.id} className="flex flex-col gap-3 rounded-2xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div key={rule.id} className="flex flex-col gap-3 rounded-lg bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-medium text-slate-950">{getDayLabel(rule.dayOfWeek)}</p>
                     <p className="text-sm text-slate-600">
@@ -289,7 +289,7 @@ export function AvailabilityManager({
           <div className="mt-4 space-y-3">
             {overrides.length ? (
               overrides.map((override) => (
-                <div key={override.id} className="flex flex-col gap-3 rounded-2xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div key={override.id} className="flex flex-col gap-3 rounded-lg bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-medium text-slate-950">{formatDate(override.date)}</p>
                     <p className="text-sm text-slate-600">

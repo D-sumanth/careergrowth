@@ -27,7 +27,7 @@ export default async function SignUpPage({
           <p className="mt-5 text-base leading-8 text-slate-600">
             Set up your account to book support sessions, upload CVs, and keep everything in one secure place as you work toward a graduate role in the UK.
           </p>
-          <div className="mt-8 space-y-4 rounded-[2rem] border border-slate-200 bg-white p-6">
+          <div className="mt-8 space-y-4 rounded-lg border border-slate-200 bg-white p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">What happens next</p>
             <ul className="space-y-3 text-sm leading-7 text-slate-600">
               <li>1. Create your account with a strong password.</li>

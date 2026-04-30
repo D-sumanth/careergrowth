@@ -27,13 +27,13 @@ export default async function AdminPage() {
         ]}
       />
 
-      <div className="grid gap-6 xl:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-3">
         <div className="xl:col-span-2">
           <AdminSectionCard title="Upcoming sessions" description="The next scheduled sessions across the platform.">
             {overview.upcomingSessions.length ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {overview.upcomingSessions.map((booking) => (
-                  <div key={booking.id} className="rounded-2xl bg-slate-50 p-4">
+                  <div key={booking.id} className="rounded-lg bg-slate-50 p-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <p className="font-medium text-slate-950">{booking.service?.title ?? "Booked session"}</p>
@@ -59,9 +59,9 @@ export default async function AdminPage() {
 
         <AdminSectionCard title="Recent payments" description="Latest recorded payment activity in the system.">
           {overview.recentPayments.length ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {overview.recentPayments.map((payment) => (
-                <div key={payment.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={payment.id} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="font-medium text-slate-950">{payment.user?.name ?? "Unknown user"}</p>
                     <Badge>{payment.status}</Badge>
@@ -84,9 +84,9 @@ export default async function AdminPage() {
 
       <AdminSectionCard title="Recent inquiries" description="Newest contact and lead submissions from the website.">
         {overview.recentInquiries.length ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {overview.recentInquiries.map((inquiry) => (
-              <div key={inquiry.id} className="rounded-2xl bg-slate-50 p-4">
+              <div key={inquiry.id} className="rounded-lg bg-slate-50 p-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-medium text-slate-950">{inquiry.subject}</p>

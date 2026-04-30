@@ -120,7 +120,7 @@ export function BookingForm({ service }: BookingFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div>
         <h2 className="font-serif text-3xl text-slate-950">Choose your session time</h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{service.description}</p>
@@ -138,7 +138,7 @@ export function BookingForm({ service }: BookingFormProps) {
           value={selectedDate}
           onChange={(event) => setSelectedDate(event.target.value)}
           min={new Date().toISOString().slice(0, 10)}
-          className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950"
+          className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950"
         />
       </label>
 
@@ -154,7 +154,7 @@ export function BookingForm({ service }: BookingFormProps) {
                 key={slot}
                 type="button"
                 onClick={() => setSelectedSlot(slot)}
-                className={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
+                className={`rounded-lg border px-4 py-3 text-left text-sm transition ${
                   selectedSlot === slot
                     ? "border-slate-950 bg-slate-950 text-white"
                     : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-white"
@@ -165,7 +165,7 @@ export function BookingForm({ service }: BookingFormProps) {
             ))}
           </div>
         ) : loadingSlots ? null : (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm leading-7 text-slate-600">
+          <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm leading-7 text-slate-600">
             No available times were found for this day. Try another date or choose a different service.
           </div>
         )}
@@ -177,12 +177,12 @@ export function BookingForm({ service }: BookingFormProps) {
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
           placeholder="Share the role family, application challenge, or interview stage you want support with."
-          className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-950"
+          className="min-h-28 w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-slate-950"
         />
       </label>
 
       {selectedSlotLabel ? (
-        <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Selected slot: {selectedSlotLabel}</div>
+        <div className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Selected slot: {selectedSlotLabel}</div>
       ) : null}
       {status ? <p className="text-sm text-emerald-700">{status}</p> : null}
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}

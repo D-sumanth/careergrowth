@@ -23,7 +23,7 @@ export default async function DashboardDocumentsPage() {
           <h2 className="font-semibold text-slate-950">Your uploaded documents</h2>
           <div className="mt-4 space-y-4">
             {documents.map((document) => (
-              <div key={document.id} className="rounded-2xl bg-slate-50 p-4">
+              <div key={document.id} className="rounded-lg bg-slate-50 p-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-medium text-slate-950">{document.fileName}</p>

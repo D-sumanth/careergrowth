@@ -29,7 +29,7 @@ export default async function AdminContentPage() {
           {data.posts.length ? (
             <div className="space-y-4">
               {data.posts.map((post) => (
-                <div key={post.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={post.id} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium text-slate-950">{post.title}</p>
                     <Badge>{post.published ? "Published" : "Draft"}</Badge>
@@ -48,13 +48,13 @@ export default async function AdminContentPage() {
           {data.faqs.length || data.testimonials.length ? (
             <div className="space-y-4">
               {data.faqs.slice(0, 5).map((faq) => (
-                <div key={faq.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={faq.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{faq.question}</p>
                   <p className="mt-2 text-sm text-slate-600">{faq.answer}</p>
                 </div>
               ))}
               {data.testimonials.slice(0, 5).map((testimonial) => (
-                <div key={testimonial.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={testimonial.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{testimonial.name}</p>
                   <p className="mt-1 text-sm text-slate-600">{testimonial.headline}</p>
                 </div>
@@ -76,7 +76,7 @@ export default async function AdminContentPage() {
             ["Testimonials management", "/admin/testimonials", "Add, edit, and remove testimonials shown across the public site."],
             ["FAQ management", "/admin/faqs", "Keep public questions and answers current from the dashboard."],
           ].map(([title, href, copy]) => (
-            <Link key={href} href={href} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white">
+            <Link key={href} href={href} className="rounded-lg border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white">
               <p className="font-medium text-slate-950">{title}</p>
               <p className="mt-2 text-sm leading-7 text-slate-600">{copy}</p>
             </Link>

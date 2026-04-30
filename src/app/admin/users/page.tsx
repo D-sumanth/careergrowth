@@ -24,7 +24,7 @@ export default async function AdminUsersPage() {
         {data.sourceBreakdown.length ? (
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {data.sourceBreakdown.map((item) => (
-              <div key={item.source} className="rounded-2xl bg-slate-50 p-4">
+              <div key={item.source} className="rounded-lg bg-slate-50 p-4">
                 <p className="text-sm font-medium capitalize text-slate-950">{item.source}</p>
                 <p className="mt-2 text-2xl font-semibold text-slate-900">{item.count}</p>
               </div>
@@ -38,7 +38,7 @@ export default async function AdminUsersPage() {
         {data.users.length ? (
           <div className="space-y-4">
             {data.users.map((user) => (
-              <div key={user.id} className="rounded-2xl bg-slate-50 p-4">
+              <div key={user.id} className="rounded-lg bg-slate-50 p-4">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">

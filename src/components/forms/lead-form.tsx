@@ -37,7 +37,7 @@ export function LeadForm({ endpoint, fields, initialValues, submitLabel }: LeadF
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form onSubmit={onSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       {fields.map((field) => (
         <label key={field.name} className="block space-y-2 text-sm font-medium text-slate-700">
           <span>{field.label}</span>
@@ -47,14 +47,14 @@ export function LeadForm({ endpoint, fields, initialValues, submitLabel }: LeadF
               required={field.required}
               defaultValue={initialValues?.[field.name]}
               placeholder={field.placeholder}
-              className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-950"
+              className="min-h-28 w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-950"
             />
           ) : field.type === "select" ? (
             <select
               name={field.name}
               required={field.required}
               defaultValue={initialValues?.[field.name]}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-950"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-950"
             >
               <option value="">Select an option</option>
               <option value="GENERAL">General inquiry</option>
@@ -69,7 +69,7 @@ export function LeadForm({ endpoint, fields, initialValues, submitLabel }: LeadF
               required={field.required}
               defaultValue={initialValues?.[field.name]}
               placeholder={field.placeholder}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-950"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-950"
             />
           )}
         </label>
@@ -80,7 +80,7 @@ export function LeadForm({ endpoint, fields, initialValues, submitLabel }: LeadF
           <span>I consent to receiving the requested communication and understand I can unsubscribe from marketing emails later.</span>
         </label>
       )}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Button type="submit" disabled={pending}>
           {pending ? "Sending..." : submitLabel}
         </Button>

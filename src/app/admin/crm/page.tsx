@@ -33,7 +33,7 @@ export default async function AdminCrmPage() {
           {data.recentInquiries.length ? (
             <div className="space-y-4">
               {data.recentInquiries.slice(0, 8).map((item) => (
-                <div key={item.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={item.id} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium text-slate-950">{item.subject}</p>
                     <Badge>{item.status}</Badge>
@@ -72,7 +72,7 @@ export default async function AdminCrmPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 transition hover:border-slate-300 hover:bg-white"
+                  className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 transition hover:border-slate-300 hover:bg-white"
                 >
                   {item.label}
                 </Link>
@@ -84,7 +84,7 @@ export default async function AdminCrmPage() {
             {data.sourceBreakdown.length ? (
               <div className="space-y-3">
                 {data.sourceBreakdown.map((item) => (
-                  <div key={item.source} className="rounded-2xl bg-slate-50 p-4">
+                  <div key={item.source} className="rounded-lg bg-slate-50 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <p className="font-medium capitalize text-slate-950">{item.source}</p>
                       <span className="text-sm font-semibold text-slate-700">{item.count}</span>
@@ -104,7 +104,7 @@ export default async function AdminCrmPage() {
             {data.recentUsers.length ? (
               <div className="space-y-3">
                 {data.recentUsers.slice(0, 8).map((user) => (
-                  <div key={user.id} className="rounded-2xl bg-slate-50 p-4">
+                  <div key={user.id} className="rounded-lg bg-slate-50 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <p className="font-medium text-slate-950">{user.name}</p>

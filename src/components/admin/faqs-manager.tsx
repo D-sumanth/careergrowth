@@ -81,7 +81,7 @@ export function FaqsManager({ items }: { items: FaqRecord[] }) {
               key={item.id}
               type="button"
               onClick={() => select(item)}
-              className={`w-full rounded-2xl border p-4 text-left transition ${
+              className={`w-full rounded-lg border p-4 text-left transition ${
                 selectedId === item.id ? "border-slate-950 bg-slate-950 text-white" : "border-slate-200 bg-slate-50"
               }`}
             >
@@ -92,15 +92,15 @@ export function FaqsManager({ items }: { items: FaqRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={submit} className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={submit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="font-semibold text-slate-950">{selected ? "Edit FAQ" : "Create FAQ"}</h2>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Question</span>
-          <input value={form.question} onChange={(e) => setForm((c) => ({ ...c, question: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+          <input value={form.question} onChange={(e) => setForm((c) => ({ ...c, question: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
         </label>
         <label className="block space-y-2 text-sm text-slate-700">
           <span>Answer</span>
-          <textarea value={form.answer} onChange={(e) => setForm((c) => ({ ...c, answer: e.target.value }))} className="min-h-32 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+          <textarea value={form.answer} onChange={(e) => setForm((c) => ({ ...c, answer: e.target.value }))} className="min-h-32 w-full rounded-lg border border-slate-300 px-4 py-3" required />
         </label>
         <div className="flex flex-wrap gap-3">
           <Button type="submit" disabled={pending}>{pending ? "Saving..." : selected ? "Update FAQ" : "Create FAQ"}</Button>

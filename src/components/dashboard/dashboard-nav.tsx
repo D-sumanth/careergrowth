@@ -99,21 +99,21 @@ export function DashboardNav({ admin = false, role = "STUDENT" }: DashboardNavPr
 
   return (
     <>
-      <aside className="hidden w-56 shrink-0 rounded-[1.75rem] border border-slate-200/90 bg-white p-4 shadow-sm lg:block lg:sticky lg:top-24">
-        <p className="mb-3 px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+      <aside className="hidden w-48 shrink-0 rounded-lg border border-slate-200/90 bg-white p-2.5 shadow-sm lg:sticky lg:top-20 lg:block">
+        <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
           {admin ? "Admin console" : role === "CONSULTANT" ? "Consultant dashboard" : "Student dashboard"}
         </p>
         {admin ? (
-          <nav className="space-y-4">
+          <nav className="space-y-3">
             {adminSections.map((section) => (
               <div key={section.label} className="space-y-1">
-                <p className="px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">{section.label}</p>
+                <p className="px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">{section.label}</p>
                 {section.items.map(([label, href, Icon]) => (
                   <Link
                     key={href}
                     href={href}
                     className={cn(
-                      "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-950",
+                      "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950",
                       isActive(pathname, href) && "bg-slate-950 text-white shadow-sm hover:bg-slate-950 hover:text-white",
                     )}
                   >
@@ -131,7 +131,7 @@ export function DashboardNav({ admin = false, role = "STUDENT" }: DashboardNavPr
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-950",
+                  "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950",
                   isActive(pathname, href) && "bg-slate-950 text-white shadow-sm hover:bg-slate-950 hover:text-white",
                 )}
               >
@@ -145,17 +145,17 @@ export function DashboardNav({ admin = false, role = "STUDENT" }: DashboardNavPr
 
       <div className="-mx-1 overflow-x-auto pb-1 lg:hidden">
         {admin ? (
-          <div className="space-y-3 px-1">
+          <div className="space-y-2.5 px-1">
             {adminSections.map((section) => (
-              <div key={section.label} className="space-y-2">
-                <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">{section.label}</p>
-                <nav className="flex min-w-max gap-2">
+              <div key={section.label} className="space-y-1.5">
+                <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">{section.label}</p>
+                <nav className="flex min-w-max gap-1.5">
                   {section.items.map(([label, href, Icon]) => (
                     <Link
                       key={href}
                       href={href}
                       className={cn(
-                        "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950",
+                        "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950",
                         isActive(pathname, href) && "border-slate-950 bg-slate-950 text-white hover:text-white",
                       )}
                     >
@@ -168,13 +168,13 @@ export function DashboardNav({ admin = false, role = "STUDENT" }: DashboardNavPr
             ))}
           </div>
         ) : (
-          <nav className="flex min-w-max gap-2 px-1">
+          <nav className="flex min-w-max gap-1.5 px-1">
             {items.map(([label, href, Icon]) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950",
+                  "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950",
                   isActive(pathname, href) && "border-slate-950 bg-slate-950 text-white hover:text-white",
                 )}
               >

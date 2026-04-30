@@ -84,7 +84,7 @@ export default async function AdminUserDetailPage({
           {timeline.length ? (
             <div className="space-y-4">
               {timeline.slice(0, 20).map((entry) => (
-                <div key={entry.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={entry.id} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="font-medium text-slate-950">{entry.label}</p>
                     <Badge>{entry.type}</Badge>
@@ -105,7 +105,7 @@ export default async function AdminUserDetailPage({
           {user.bookings.length ? (
             <div className="space-y-3">
               {user.bookings.map((booking) => (
-                <div key={booking.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={booking.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{booking.service?.title ?? "Session booking"}</p>
                   <p className="mt-1 text-sm text-slate-600">{booking.status} - {booking.paymentStatus}</p>
                   <p className="mt-2 text-xs text-slate-500">{formatDateTime(booking.startsAt, booking.timezone)}</p>
@@ -121,7 +121,7 @@ export default async function AdminUserDetailPage({
           {user.payments.length ? (
             <div className="space-y-3">
               {user.payments.map((payment) => (
-                <div key={payment.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={payment.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{payment.booking?.service?.title ?? "Payment"}</p>
                   <p className="mt-1 text-sm text-slate-600">{payment.status} - {formatCurrency(payment.amountPence)}</p>
                   <p className="mt-2 text-xs text-slate-500">{formatDateTime(payment.createdAt)}</p>
@@ -137,14 +137,14 @@ export default async function AdminUserDetailPage({
           {user.inquiries.length || user.reviewRequests.length ? (
             <div className="space-y-3">
               {user.inquiries.map((inquiry) => (
-                <div key={inquiry.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={inquiry.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{inquiry.subject}</p>
                   <p className="mt-1 text-sm text-slate-600">{inquiry.status}</p>
                   <p className="mt-2 text-xs text-slate-500">{formatDateTime(inquiry.createdAt)}</p>
                 </div>
               ))}
               {user.reviewRequests.map((review) => (
-                <div key={review.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={review.id} className="rounded-lg bg-slate-50 p-4">
                   <p className="font-medium text-slate-950">{review.jobTarget}</p>
                   <p className="mt-1 text-sm text-slate-600">{review.status} - {review.documents.length} documents</p>
                   <p className="mt-2 text-xs text-slate-500">{formatDateTime(review.createdAt)}</p>

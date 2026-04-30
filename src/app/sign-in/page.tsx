@@ -30,11 +30,11 @@ export default async function SignInPage({
             Access your dashboard, review requests, bookings, and delivered documents with a smoother, security-first sign-in flow.
           </p>
           <div className="mt-8 grid gap-4 text-sm text-slate-600 sm:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
+            <div className="rounded-lg border border-slate-200 bg-white px-5 py-4">
               <p className="font-semibold text-slate-900">Clear next steps</p>
               <p className="mt-2 leading-7">After sign-in you&apos;ll land back on the booking or dashboard page you intended to visit.</p>
             </div>
-            <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
+            <div className="rounded-lg border border-slate-200 bg-white px-5 py-4">
               <p className="font-semibold text-slate-900">Secure by default</p>
               <p className="mt-2 leading-7">Protected sessions, verification-aware flows, and safer reset handling are built into the experience.</p>
             </div>

@@ -8,7 +8,7 @@ export function Badge({
   className?: string;
 }) {
   return (
-    <span className={cn("inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600", className)}>
+    <span className={cn("inline-flex rounded-md bg-white/85 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-600", className)}>
       {children}
     </span>
   );

@@ -22,11 +22,11 @@ export default async function CheckoutSuccessPage({
             : "Stripe is still finalising this payment. If you just completed checkout, refresh shortly or check your dashboard bookings."}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/dashboard/bookings" className="inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+          <Link href="/dashboard/bookings" className="inline-flex items-center rounded-lg bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
             View bookings
           </Link>
           {bookingId ? (
-            <Link href={`/services`} className="inline-flex items-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
+            <Link href={`/services`} className="inline-flex items-center rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
               Browse more services
             </Link>
           ) : null}

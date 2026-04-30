@@ -173,7 +173,7 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
               key={item.id}
               type="button"
               onClick={() => select(item)}
-              className={`w-full rounded-2xl border p-4 text-left transition ${
+              className={`w-full rounded-lg border p-4 text-left transition ${
                 selectedId === item.id ? "border-slate-950 bg-slate-950 text-white" : "border-slate-200 bg-slate-50"
               }`}
             >
@@ -192,20 +192,20 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={submit} className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <form onSubmit={submit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="font-semibold text-slate-950">{selected ? "Edit workshop" : "Create workshop"}</h2>
         <div className="grid gap-4 lg:grid-cols-2">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Title</span>
-            <input value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Slug</span>
-            <input value={form.slug} onChange={(e) => setForm((c) => ({ ...c, slug: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.slug} onChange={(e) => setForm((c) => ({ ...c, slug: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Description</span>
-            <textarea value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="min-h-32 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <textarea value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="min-h-32 w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <div className="lg:col-span-2">
             <MediaUploadField
@@ -217,31 +217,31 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
           </div>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Starts at</span>
-            <input type="datetime-local" value={form.startsAt} onChange={(e) => setForm((c) => ({ ...c, startsAt: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input type="datetime-local" value={form.startsAt} onChange={(e) => setForm((c) => ({ ...c, startsAt: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Ends at</span>
-            <input type="datetime-local" value={form.endsAt} onChange={(e) => setForm((c) => ({ ...c, endsAt: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input type="datetime-local" value={form.endsAt} onChange={(e) => setForm((c) => ({ ...c, endsAt: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Timezone</span>
-            <input value={form.timezone} onChange={(e) => setForm((c) => ({ ...c, timezone: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.timezone} onChange={(e) => setForm((c) => ({ ...c, timezone: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Seat limit</span>
-            <input type="number" min="1" value={form.seatLimit} onChange={(e) => setForm((c) => ({ ...c, seatLimit: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input type="number" min="1" value={form.seatLimit} onChange={(e) => setForm((c) => ({ ...c, seatLimit: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Active price (pence)</span>
-            <input type="number" min="0" value={form.pricePence} onChange={(e) => setForm((c) => ({ ...c, pricePence: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input type="number" min="0" value={form.pricePence} onChange={(e) => setForm((c) => ({ ...c, pricePence: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Original price (pence)</span>
-            <input type="number" min="0" value={form.compareAtPricePence} onChange={(e) => setForm((c) => ({ ...c, compareAtPricePence: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input type="number" min="0" value={form.compareAtPricePence} onChange={(e) => setForm((c) => ({ ...c, compareAtPricePence: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Status</span>
-            <select value={form.status} onChange={(e) => setForm((c) => ({ ...c, status: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+            <select value={form.status} onChange={(e) => setForm((c) => ({ ...c, status: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3">
               <option value="DRAFT">Draft</option>
               <option value="PUBLISHED">Published</option>
               <option value="COMPLETED">Completed</option>
@@ -250,11 +250,11 @@ export function WorkshopsManager({ items }: { items: WorkshopRecord[] }) {
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Replay URL</span>
-            <input value={form.replayUrl} onChange={(e) => setForm((c) => ({ ...c, replayUrl: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input value={form.replayUrl} onChange={(e) => setForm((c) => ({ ...c, replayUrl: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Download URL</span>
-            <input value={form.downloadUrl} onChange={(e) => setForm((c) => ({ ...c, downloadUrl: e.target.value }))} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input value={form.downloadUrl} onChange={(e) => setForm((c) => ({ ...c, downloadUrl: e.target.value }))} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
         </div>
 

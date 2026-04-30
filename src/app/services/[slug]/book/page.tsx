@@ -25,7 +25,7 @@ export default async function BookServicePage({
     <>
       <SiteHeader />
       <main className="mx-auto max-w-6xl space-y-8 px-5 py-16 sm:px-8">
-        <div className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-orange-50 via-white to-slate-50 p-8 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-gradient-to-br from-orange-50 via-white to-slate-50 p-8 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-700">Book a service</p>
           <h1 className="mt-4 max-w-4xl font-serif text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
             {service.title}

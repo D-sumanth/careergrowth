@@ -228,7 +228,7 @@ export function AuthForm({
   const showPasswordGuidance = mode === "sign-up" || mode === "reset-password";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_32px_80px_-48px_rgba(15,23,42,0.35)]">
+    <form onSubmit={onSubmit} noValidate className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_32px_80px_-48px_rgba(15,23,42,0.35)]">
       <div className="border-b border-amber-100 bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.18),_transparent_55%),linear-gradient(180deg,#fffdf7,#ffffff)] px-6 py-6 sm:px-8">
         <div className="inline-flex rounded-full border border-amber-200/80 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
           Secure account access
@@ -251,7 +251,7 @@ export function AuthForm({
               type="button"
               disabled={!oauthProviders.google || pending || Boolean(providerPending)}
               onClick={() => handleSocialSignIn("google")}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {providerPending === "google" ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
               Continue with Google
@@ -260,7 +260,7 @@ export function AuthForm({
               type="button"
               disabled={!oauthProviders.linkedin || pending || Boolean(providerPending)}
               onClick={() => handleSocialSignIn("linkedin")}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {providerPending === "linkedin" ? <Loader2 className="h-4 w-4 animate-spin" /> : <LinkedInIcon />}
               Continue with LinkedIn
@@ -277,14 +277,14 @@ export function AuthForm({
         ) : null}
 
         {formError ? (
-          <div className="flex gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <div className="flex gap-3 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
             <CircleAlert className="mt-0.5 h-5 w-5 flex-none" />
             <p>{formError}</p>
           </div>
         ) : null}
 
         {successMessage ? (
-          <div className="flex gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
             <CircleCheckBig className="mt-0.5 h-5 w-5 flex-none" />
             <p>{successMessage}</p>
           </div>
@@ -300,7 +300,7 @@ export function AuthForm({
                 setName(event.target.value);
                 if (fieldErrors.name) setInlineError("name", "");
               }}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
               placeholder="Aditi Rahegaonkar"
               autoComplete="name"
             />
@@ -319,7 +319,7 @@ export function AuthForm({
                 setEmail(event.target.value);
                 if (fieldErrors.email) setInlineError("email", "");
               }}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
               placeholder="you@example.com"
               autoComplete="email"
             />
@@ -339,7 +339,7 @@ export function AuthForm({
                   setPassword(event.target.value);
                   if (fieldErrors.password) setInlineError("password", "");
                 }}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
                 placeholder={mode === "sign-in" ? "Enter your password" : "Create a strong password"}
                 autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
               />
@@ -368,7 +368,7 @@ export function AuthForm({
                   setConfirmPassword(event.target.value);
                   if (fieldErrors.confirmPassword) setInlineError("confirmPassword", "");
                 }}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-200"
                 placeholder="Re-enter your password"
                 autoComplete="new-password"
               />
@@ -386,7 +386,7 @@ export function AuthForm({
         ) : null}
 
         {showPasswordGuidance ? (
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-4">
             <p className="text-sm font-semibold text-slate-900">Password requirements</p>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
               {passwordChecks.map((rule) => (
@@ -416,7 +416,7 @@ export function AuthForm({
         ) : null}
 
         {mode === "sign-up" ? (
-          <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm leading-6 text-slate-600">
+          <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-4 text-sm leading-6 text-slate-600">
             <input
               type="checkbox"
               checked={acceptTerms}
@@ -462,7 +462,7 @@ export function AuthForm({
         ) : null}
 
         {mode === "sign-in" && showDemoHint ? (
-          <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-800">
+          <div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-800">
             Demo accounts are available in mock mode: <strong>student@example.com</strong>, <strong>coach@careergrowthstudio.co.uk</strong>, or <strong>admin@careergrowthstudio.co.uk</strong> with password <strong>Password123!</strong>
           </div>
         ) : null}

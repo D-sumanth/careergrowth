@@ -20,7 +20,7 @@ export default async function AboutPage() {
             <ButtonLink href="/services">Book a Session</ButtonLink>
           </div>
           <Card className="bg-gradient-to-br from-amber-100 via-white to-orange-100 p-8">
-            <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
+            <div className="rounded-lg bg-slate-950 p-8 text-white">
               <h2 className="font-serif text-3xl">Mission and values</h2>
               <ul className="mt-5 space-y-3 text-sm leading-7 text-slate-300">
                 {siteConfig.values.map((value) => (

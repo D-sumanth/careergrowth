@@ -61,7 +61,7 @@ export default async function AdminAnalyticsPage() {
           {data.monthlyFunnel.length ? (
             <div className="space-y-4">
               {data.monthlyFunnel.map((item) => (
-                <div key={item.label} className="rounded-2xl bg-slate-50 p-4">
+                <div key={item.label} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="font-medium text-slate-950">{item.label}</p>
                     <p className="text-xs text-slate-500">Inquiry {"->"} Sign-up {"->"} Booking</p>
@@ -102,7 +102,7 @@ export default async function AdminAnalyticsPage() {
         {data.subscriberSources.length ? (
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {data.subscriberSources.map((item) => (
-              <div key={item.source} className="rounded-2xl bg-slate-50 p-4">
+              <div key={item.source} className="rounded-lg bg-slate-50 p-4">
                 <p className="text-sm font-medium capitalize text-slate-950">{item.source}</p>
                 <p className="mt-2 text-2xl font-semibold text-slate-900">{item.count}</p>
               </div>
@@ -121,7 +121,7 @@ export default async function AdminAnalyticsPage() {
           {data.servicePerformance.length ? (
             <div className="space-y-4">
               {data.servicePerformance.map((service) => (
-                <div key={service.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={service.id} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-medium text-slate-950">{service.title}</p>
@@ -161,7 +161,7 @@ export default async function AdminAnalyticsPage() {
           {data.workshopPerformance.length ? (
             <div className="space-y-4">
               {data.workshopPerformance.map((workshop) => (
-                <div key={workshop.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={workshop.id} className="rounded-lg bg-slate-50 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-medium text-slate-950">{workshop.title}</p>

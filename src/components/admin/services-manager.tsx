@@ -167,7 +167,7 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
               key={item.id}
               type="button"
               onClick={() => handleSelect(item)}
-              className={`w-full rounded-2xl border p-4 text-left transition ${
+              className={`w-full rounded-lg border p-4 text-left transition ${
                 selectedId === item.id ? "border-slate-950 bg-slate-950 text-white" : "border-slate-200 bg-slate-50 hover:border-slate-300"
               }`}
             >
@@ -185,28 +185,28 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
         </div>
       </Card>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="font-semibold text-slate-950">{selectedId ? "Edit service" : "Create service"}</h2>
         <div className="grid gap-4 lg:grid-cols-2">
           <label className="space-y-2 text-sm text-slate-700">
             <span>Title</span>
-            <input value={form.title} onChange={(e) => updateForm("title", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.title} onChange={(e) => updateForm("title", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Slug</span>
-            <input value={form.slug} onChange={(e) => updateForm("slug", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.slug} onChange={(e) => updateForm("slug", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Short description</span>
-            <input value={form.shortDescription} onChange={(e) => updateForm("shortDescription", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input value={form.shortDescription} onChange={(e) => updateForm("shortDescription", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Description</span>
-            <textarea value={form.description} onChange={(e) => updateForm("description", e.target.value)} className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <textarea value={form.description} onChange={(e) => updateForm("description", e.target.value)} className="min-h-28 w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Who it is for</span>
-            <textarea value={form.whoItIsFor} onChange={(e) => updateForm("whoItIsFor", e.target.value)} className="min-h-24 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <textarea value={form.whoItIsFor} onChange={(e) => updateForm("whoItIsFor", e.target.value)} className="min-h-24 w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <div className="lg:col-span-2">
             <MediaUploadField
@@ -218,20 +218,20 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
           </div>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>YouTube video URL (optional)</span>
-            <input value={form.videoUrl} onChange={(e) => updateForm("videoUrl", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" placeholder="https://www.youtube.com/watch?v=..." />
+            <input value={form.videoUrl} onChange={(e) => updateForm("videoUrl", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" placeholder="https://www.youtube.com/watch?v=..." />
             <p className="text-xs leading-6 text-slate-500">Shown on the service detail page in a responsive video section.</p>
           </label>
           <label className="space-y-2 text-sm text-slate-700 lg:col-span-2">
             <span>Included items (one per line)</span>
-            <textarea value={form.includedItemsText} onChange={(e) => updateForm("includedItemsText", e.target.value)} className="min-h-28 w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <textarea value={form.includedItemsText} onChange={(e) => updateForm("includedItemsText", e.target.value)} className="min-h-28 w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Duration (minutes)</span>
-            <input type="number" min="0" value={form.durationMinutes} onChange={(e) => updateForm("durationMinutes", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input type="number" min="0" value={form.durationMinutes} onChange={(e) => updateForm("durationMinutes", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Booking kind</span>
-            <select value={form.bookingKind} onChange={(e) => updateForm("bookingKind", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3">
+            <select value={form.bookingKind} onChange={(e) => updateForm("bookingKind", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3">
               <option value="ONE_TO_ONE">One to one</option>
               <option value="RESUME_REVIEW">Resume review</option>
               <option value="WORKSHOP">Workshop</option>
@@ -239,11 +239,11 @@ export function ServicesManager({ items }: { items: ServiceRecord[] }) {
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Active price (pence)</span>
-            <input type="number" min="0" value={form.pricePence} onChange={(e) => updateForm("pricePence", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" required />
+            <input type="number" min="0" value={form.pricePence} onChange={(e) => updateForm("pricePence", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" required />
           </label>
           <label className="space-y-2 text-sm text-slate-700">
             <span>Original price (pence, optional)</span>
-            <input type="number" min="0" value={form.compareAtPricePence} onChange={(e) => updateForm("compareAtPricePence", e.target.value)} className="w-full rounded-2xl border border-slate-300 px-4 py-3" />
+            <input type="number" min="0" value={form.compareAtPricePence} onChange={(e) => updateForm("compareAtPricePence", e.target.value)} className="w-full rounded-lg border border-slate-300 px-4 py-3" />
           </label>
         </div>
 
